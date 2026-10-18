@@ -85,3 +85,35 @@ delivery:
 note: 'Page 2 mentions "Individual-Plan" with pay-per-use pricing for signatures: SES: 1.00 EUR or CHF, AES: 3.00 EUR or CHF, QES: 4.50 EUR or
   CHF, but this appears to be a special version of the Starter plan mentioned in the help article.'
 docs: https://www.skribble.com/en-eu/pricing/
+x-canonical:
+  generated: '2026-10-18'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units: []
+  plans:
+  - name: Starter
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Team
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Pro
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Scale
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
