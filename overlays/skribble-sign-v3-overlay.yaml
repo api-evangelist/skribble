@@ -1,0 +1,35 @@
+overlay: 1.0.0
+info:
+  title: Skribble sign-v3 enhancements
+  version: 1.0.0
+extends: ../openapi/_original/skribble-sign-v3-openapi.yml
+x-generated: '2026-10-18'
+x-method: generated
+x-source: https://api.docs.skribble.com/llms-full.txt (Limits, Error Handling, Callbacks pages)
+actions:
+- target: $.info
+  description: Link the provider-published llms.txt documentation index and limits page.
+  update:
+    x-llms-txt: https://api.docs.skribble.com/llms.txt
+    x-limits-docs: https://api.docs.skribble.com/limits
+    x-error-handling-docs: https://api.docs.skribble.com/error-handling
+- target: $.paths['/access/login'].post
+  description: Documented login rate limiting and token lifetime (https://api.docs.skribble.com/limits).
+  update:
+    x-rate-limit:
+      note: Rate limited; cache tokens for their ~20-minute lifetime instead of re-authenticating per request.
+      source: https://api.docs.skribble.com/limits
+- target: $.paths['/signature-requests/{SR_ID}/remind'].post
+  description: Documented per-signer reminder limit (https://api.docs.skribble.com/limits).
+  update:
+    x-rate-limit:
+      max: 1
+      window: 1 hour
+      scope: per signer
+      note: Exceeding returns 429.
+      source: https://api.docs.skribble.com/limits
+- target: $.paths['/signature-requests'].post
+  description: Skribble offers callbacks rather than webhooks (https://api.docs.skribble.com/sign-api-callbacks).
+  update:
+    x-callbacks-docs: https://api.docs.skribble.com/sign-api-callbacks
+    x-webhooks: not offered; use callback URLs on the signature request

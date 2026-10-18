@@ -1,0 +1,34 @@
+generated: '2026-10-18'
+method: searched
+source: https://api.docs.skribble.com/introduction
+standards:
+- id: eIDAS
+  conforms: true
+  evidence: Skribble supports EU eIDAS legislation for electronic signatures
+  source: https://api.docs.skribble.com/introduction
+- id: ZertES
+  conforms: true
+  evidence: Skribble supports Swiss ZertES legislation for electronic signatures
+  source: https://api.docs.skribble.com/introduction
+- id: RFC9457
+  conforms: true
+  evidence: Error responses follow Problem+JSON format (RFC 9457)
+  source: https://api.docs.skribble.com/error-handling
+- id: oauth2
+  conforms: false
+  evidence: Authentication uses JWT bearer tokens obtained via API key login, not OAuth2
+  source: https://api.docs.skribble.com/authentication
+- id: pagination
+  conforms: true
+  evidence: APIs support pagination with page_number and page_size parameters
+  source: https://api.docs.skribble.com/limits
+- id: idempotency
+  conforms: false
+  evidence: No idempotency mechanism documented in the API documentation
+  source: https://api.docs.skribble.com/
+- id: openapi-3.1
+  conforms: true
+  evidence: the document declares 3.1.0
+- id: rfc9457
+  conforms: false
+  evidence: no response declares application/problem+json

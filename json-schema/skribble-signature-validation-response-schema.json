@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/skribble/main/json-schema/skribble-signature-validation-response-schema.json",
+  "title": "SignatureValidationResponse",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/skribble-validation-v1-openapi.yml#/components/schemas/SignatureValidationResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "signatures": {
+      "type": "integer",
+      "description": "Number of signatures found"
+    },
+    "validSignatures": {
+      "type": "integer",
+      "description": "Number of valid signatures found"
+    },
+    "quality": {
+      "type": "string",
+      "description": "Highest signature quality found"
+    },
+    "legislation": {
+      "type": "string",
+      "description": "Identified legislation (CH, EU, CH-EU, WORLD)"
+    },
+    "longTermValidation": {
+      "type": "boolean",
+      "description": "All signatures are provided with long-term validation information"
+    },
+    "additionalInfos": {
+      "description": "(Optional) Additional information details",
+      "$ref": "#/$defs/OptionalValidationInfos"
+    }
+  },
+  "$defs": {
+    "FormatInfosResponse": {
+      "type": "object",
+      "properties": {
+        "fileType": {
+          "type": "string",
+          "description": "File Type"
+        },
+        "quality": {
+          "type": "string",
+          "description": "(Optional) File Type Quality"
+        },
+        "producer": {
+          "type": "string",
+          "description": "(Optional) File producer"
+        }
+      }
+    },
+    "OptionalSignerInfos": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "contact": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "OptionalValidationInfos": {
+      "type": "object",
+      "properties": {
+        "signer": {
+          "$ref": "#/$defs/SignerInfosResponse"
+        },
+        "format": {
+          "$ref": "#/$defs/FormatInfosResponse"
+        },
+        "validation": {
+          "$ref": "#/$defs/ValidationInfosResponse"
+        }
+      }
+    },
+    "Signer": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "signer": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "quality": {
+          "type": "string"
+        },
+        "legislation": {
+          "type": "string"
+        },
+        "longTermValidation": {
+          "type": "boolean"
+        },
+        "visualDifferences": {
+          "type": "boolean"
+        },
+        "undefinedChanges": {
+          "type": "boolean"
+        },
+        "certificate": {
+          "$ref": "#/$defs/SignerCertificate"
+        },
+        "optionalInfos": {
+          "$ref": "#/$defs/OptionalSignerInfos"
+        }
+      }
+    },
+    "SignerCertificate": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "string"
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "serialNumber": {
+          "type": "string"
+        }
+      }
+    },
+    "SignerInfosResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Signer"
+      }
+    },
+    "ValidationInfosResponse": {
+      "type": "object",
+      "properties": {
+        "indication": {
+          "type": "string"
+        },
+        "subIndication": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

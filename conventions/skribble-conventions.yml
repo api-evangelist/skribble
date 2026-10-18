@@ -1,0 +1,46 @@
+generated: '2026-10-18'
+method: searched
+source: https://api.docs.skribble.com/
+authentication:
+  style: jwt_bearer
+  header: "Authorization: Bearer <token>"
+  token_obtainment: "POST /access/login with username and api-key"
+  token_lifetime: "~20 minutes"
+  evidence: https://api.docs.skribble.com/authentication
+idempotency:
+  coverage: none
+  evidence: "No idempotency mechanism documented in the API documentation"
+pagination:
+  style: offset_limit
+  parameters: "page_number, page_size"
+  evidence: "APIs support pagination with page_number and page_size parameters"
+  source: https://api.docs.skribble.com/limits
+error_envelope:
+  format: problem+json
+  fields: "type, method, path, status, message, key"
+  evidence: "Error responses follow Problem+JSON format (RFC 9457)"
+  source: https://api.docs.skribble.com/error-handling
+rate_limit_signaling:
+  status_code: 429
+  headers: Retry-After
+  evidence: "Rate limits return 429 with optional Retry-After header"
+  source: https://api.docs.skribble.com/limits
+versioning:
+  style: url_path
+  pattern: "/v2/, /v3/"
+  evidence: "API versions are specified in URL path (e.g., /v2/, /v3/)"
+  source: https://api.docs.skribble.com/api-versioning
+reversibility:
+  coverage: none
+  evidence: "No reversal operations (cancel, refund, void) documented for signature requests"
+  note: "Signature requests once created and initiated cannot be reversed via API"
+data_regions:
+  regions:
+  - name: Switzerland
+    base_url: https://api.skribble.com
+    data_residency: Switzerland
+  - name: Germany
+    base_url: https://api.skribble.de
+    data_residency: Germany/EU
+  evidence: "Skribble hosts data in two regions with different base URLs"
+  source: https://api.docs.skribble.com/introduction

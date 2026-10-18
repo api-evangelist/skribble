@@ -1,0 +1,14 @@
+generated: '2026-10-18'
+method: searched
+source: https://api.docs.skribble.com/api-versioning
+versioning:
+  scheme: semantic
+  breaking_changes: new_api_version
+  additive_changes: current_version
+  policy: "Breaking changes are released in a new API version with advance notice. Additive changes are rolled out to all supported versions."
+  evidence: "Breaking changes include removing operations, renaming parameters/fields, adding required parameters, changing types, removing enum values, adding validation rules, changing authentication requirements. Additive changes include adding operations, optional parameters, response fields, enum values."
+deprecation:
+  policy: "Previous versions continue to be supported for an extended transition period when a new version is released."
+  evidence: "Sign API v1 reached end of support on 30 November 2025. v2 is current stable, v3 is preview."
+status_page: https://status.skribble.com/
+note: "Sign API v3 is in preview and subject to change before general availability. Do not use it in production without accepting that breaking changes may occur."

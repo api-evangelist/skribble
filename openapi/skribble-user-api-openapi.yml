@@ -1,0 +1,346 @@
+openapi: 3.2.0
+info:
+  title: Skribble User API
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  version: '1.0'
+  description: 'Operations tagged User across 3 of this provider''s published API definitions: skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.skribble.com/v3
+  description: Production - Switzerland
+- url: https://api.skribble.de/v3
+  description: Production - Germany
+- url: https://api.skribble.com/v2
+  description: Production - Switzerland
+- url: https://api.skribble.de/v2
+  description: Production - Germany
+security: []
+tags:
+- name: User
+  description: Endpoints for user information and signature quality queries.
+paths:
+  /user/signature-qualities:
+    get:
+      tags:
+      - User
+      summary: Get Signature Quality Details for a User
+      description: 'Returns the effective signature `quality` that will be applied when the
+
+        given `username` signs a document.
+
+
+        The resulting quality is determined by the combination of the requested
+
+        `quality` and `legislation`, where `any` matches any legislation.
+
+
+        For example, if you create a `SignatureRequest` with `quality=AES_MINIMAL`
+
+        and `legislation=ZERTES`, this endpoint will indicate the final quality the
+
+        user will sign with — typically `QES`, as `AES_MINIMAL` upgrades to `QES`
+
+        when the user''s settings allow it.'
+      operationId: getUserSignatureQualities
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/UserName'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSignatureQualitiesResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/UserSignatureQualitiesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+components:
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and only present
+
+        for errors that carry a machine-readable code.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g. `api.skribble.com`
+
+            and `api.skribble.de` for the production regions; other environments
+
+            use their respective hosts). Match on the path segment after `/problem/`
+
+            rather than the full URI. Known values:
+
+
+            - `https://api.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://api.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://api.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://api.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://api.skribble.com/problem/parameterized` — parameterized error with details
+
+            - `https://api.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://api.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v2/signature-requests
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: 'Optional machine-readable error key. Present for a subset of errors that carry
+
+            a stable code. Prefer matching on this field over parsing `message`, which is
+
+            not part of the stable contract.
+
+
+            Known keys, grouped by category:
+
+
+            Authentication (`403`):
+
+
+            - `error.auth.token_expired`: the access token has expired
+
+            - `error.auth.token_invalid`: the access token is malformed or otherwise invalid
+
+            - `error.auth.credentials_invalid`: the supplied credentials were rejected
+
+
+            Rate limiting (`429`):
+
+
+            - `error.rate_limit.exceeded`: a generic rate limit was exceeded
+
+            - `error.rate_limit.reminder`: the per-signature-request reminder limit was exceeded
+
+
+            File upload / attachment (`400`):
+
+
+            - `file.attachment.unsupported`: the uploaded attachment type is not supported
+
+            - `file.malware.detected`: malware was detected in the uploaded file
+
+
+            PDF processing (`400`):
+
+
+            - `file.pdf.general_error`: the PDF could not be loaded (corrupt or unreadable)
+
+            - `file.pdf.encryption.unknown_password`: the PDF is encrypted with an unknown password
+
+            - `file.pdf.encryption.no_changes_allowed`: the PDF''s signature permissions (DocMDP) do not allow the required changes
+
+            - `file.pdf.encryption.unknown_permissions`: the PDF is encrypted with an unknown permissions type
+
+            - `file.pdf.signature_verification.failed`: verification of an existing PDF signature failed
+
+
+            Signature request (`400`):
+
+
+            - `error.sr.last_document_cannot_be_removed`: the request would remove the only remaining document from the signature request; an SR must keep at least one document'
+          example: file.attachment.unsupported
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Validation failed for JSON object
+    UserSignatureQualitiesResponse:
+      title: User Signature Qualities Response
+      type: object
+      properties:
+        qes:
+          type: object
+          properties:
+            zertes:
+              type: string
+              description: Effective quality when requesting QES with ZERTES legislation.
+              example: QES
+            eidas:
+              type:
+              - string
+              - 'null'
+              description: Effective quality when requesting QES with eIDAS legislation. Null if not available for this user.
+              example: QES
+        aes_minimal:
+          type: object
+          description: Best possible quality, but AES at a minimum.
+          properties:
+            zertes:
+              type: string
+              description: Effective quality when requesting AES_MINIMAL with ZERTES legislation.
+              example: QES
+            eidas:
+              type: string
+              description: Effective quality when requesting AES_MINIMAL with eIDAS legislation.
+              example: AES
+        aes:
+          type: object
+          properties:
+            any:
+              type: string
+              description: Effective quality when requesting AES with any legislation.
+              example: AES
+        ses:
+          type: object
+          properties:
+            any:
+              type: string
+              description: Effective quality when requesting SES with any legislation.
+              example: SES
+  responses:
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 429
+            message: Too many requests
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests
+            status: 401
+            message: Unauthorized
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 500
+            message: Internal server error
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 503
+            message: Service unavailable
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 400
+            message: Validation failed for JSON object
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/entity-not-found
+            method: GET
+            path: /v2/signature-requests/00000000-0000-0000-0000-000000000000
+            status: 404
+            message: SignatureRequest not found
+  examples:
+    UserSignatureQualitiesResponse:
+      summary: Sample User Signature Qualities Response
+      value:
+        qes:
+          zertes: QES
+          eidas: null
+        aes_minimal:
+          zertes: QES
+          eidas: AES
+        aes:
+          any: AES
+        ses:
+          any: SES
+  parameters:
+    UserName:
+      name: username
+      in: query
+      description: Username to find
+      required: false
+      schema:
+        type: string
+        format: email
+      example: john.doe@skribble.com
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-sign-v3-openapi.yml
+- skribble-sign-v2-openapi.yml
+- skribble-sign-v3-openapi.yml

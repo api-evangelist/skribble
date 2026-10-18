@@ -1,0 +1,5 @@
+generated: '2026-10-18'
+method: none
+note: "No first-party CLI documented. Python SDK available via PyPI (skribble package)"
+install: "pip install skribble"
+commands: []

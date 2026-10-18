@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/skribble/main/json-schema/skribble-identification-evidence-status-response-schema.json",
+  "title": "Identification Evidence Status Response",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/skribble-sign-v2-openapi.yml#/components/schemas/IdentificationEvidenceStatusResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Internal ID of the evidence record."
+    },
+    "transactionCode": {
+      "type": "string",
+      "description": "Unique transaction code for the identification process."
+    },
+    "accountId": {
+      "type": "integer",
+      "description": "Internal account ID associated with the identification."
+    },
+    "workflowId": {
+      "type": "integer",
+      "description": "Internal workflow ID used for the identification process."
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the identification process.",
+      "enum": [
+        "COMPLETED",
+        "PENDING",
+        "FAILED"
+      ]
+    },
+    "pendingReview": {
+      "description": "Present if the identification is pending manual review, otherwise null.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the identification was created."
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the identification evidence expires."
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the identification process was started by the signer."
+    },
+    "completedAt": {
+      "description": "Timestamp when the identification process was completed. Null if not yet completed.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "format": "date-time"
+        }
+      ]
+    },
+    "reviewedAt": {
+      "description": "Timestamp when the identification was reviewed. Null if not reviewed.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "format": "date-time"
+        }
+      ]
+    }
+  }
+}

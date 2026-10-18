@@ -1,0 +1,66 @@
+{
+  "provider": "skribble",
+  "sources": [
+    "_original/skribble-sign-v3-openapi.yml",
+    "_original/skribble-validation-v1-openapi.yml",
+    "skribble-sign-v2-openapi.yml",
+    "skribble-sign-v3-openapi.yml",
+    "skribble-validation-v1-openapi.yml"
+  ],
+  "outputs": [
+    "skribble-access-api-openapi.yml",
+    "skribble-document-api-openapi.yml",
+    "skribble-identification-api-openapi.yml",
+    "skribble-monitoring-api-openapi.yml",
+    "skribble-report-api-openapi.yml",
+    "skribble-seal-api-openapi.yml",
+    "skribble-sendto-api-openapi.yml",
+    "skribble-signature-api-openapi.yml",
+    "skribble-signature-attachment-api-openapi.yml",
+    "skribble-signature-handling-api-openapi.yml",
+    "skribble-signature-observer-api-openapi.yml",
+    "skribble-signature-signer-api-openapi.yml",
+    "skribble-user-api-openapi.yml",
+    "skribble-additional-information-api-openapi.yml",
+    "skribble-billing-and-credits-api-openapi.yml",
+    "skribble-reports-api-openapi.yml",
+    "skribble-validation-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/skribble-sign-v2-openapi.yml",
+    "archived openapi/skribble-sign-v3-openapi.yml",
+    "archived openapi/skribble-validation-v1-openapi.yml"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "skribble-sign-v3-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "skribble-validation-v1-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "skribble-sign-v2-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "skribble-sign-v3-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "skribble-validation-v1-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "tag 'Access' spans 5 source specs (skribble-sign-v3-openapi.yml, skribble-validation-v1-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml, skribble-validation-v1-openapi.yml): per-path servers applied",
+    "tag 'Document' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Identification' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Monitoring' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Report' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Seal' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'SendTo' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Signature' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Signature Attachment' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Signature Handling' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Signature Observer' spans 2 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Signature Signer' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'User' spans 3 source specs (skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml): per-path servers applied",
+    "tag 'Additional Information' spans 2 source specs (skribble-validation-v1-openapi.yml, skribble-validation-v1-openapi.yml): per-path servers applied",
+    "tag 'Billing and Credits' spans 2 source specs (skribble-validation-v1-openapi.yml, skribble-validation-v1-openapi.yml): per-path servers applied",
+    "tag 'Reports' spans 2 source specs (skribble-validation-v1-openapi.yml, skribble-validation-v1-openapi.yml): per-path servers applied",
+    "tag 'Validation' spans 2 source specs (skribble-validation-v1-openapi.yml, skribble-validation-v1-openapi.yml): per-path servers applied",
+    "apis.yml register: written (+17 apis, 17 total)"
+  ],
+  "skipped": [
+    "_original/skribble-sign-v2-openapi.yml: archived document superseded by a larger archived document"
+  ]
+}

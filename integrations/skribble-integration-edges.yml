@@ -1,0 +1,38 @@
+generated: '2026-10-18'
+method: searched
+source:
+- https://zapier.com/apps/skribble/integrations
+- https://n8n.io/integrations/skribble/
+- https://composio.dev/toolkits/skribble
+- https://monid.ai/tools/skribble
+checked:
+- https://appsource.microsoft.com/en-us/product/office/WA200008248
+- https://composio.dev/toolkits/skribble
+- https://docs.skribble.com/business-admin/integrations/google.html
+- https://monid.ai/tools/skribble
+- https://n8n.io/integrations/skribble/
+- https://www.skribble.com/en-eu/integrations/
+- https://zapier.com/apps/skribble/integrations
+summary: null
+marketplace_apps: []
+edges:
+- partner: google-drive
+  partner_name: Google Drive
+  type: claimed
+  direction: provider-built
+  evidence: https://docs.skribble.com/business-admin/integrations/google.html
+  description: Google Drive integration
+- partner: microsoft
+  partner_name: Microsoft
+  type: claimed
+  direction: provider-built
+  evidence: https://docs.skribble.com/business-admin/integrations/microsoft.html
+  description: Microsoft integration (Office, SharePoint, OneDrive)
+- partner: microsoft-power-automate
+  partner_name: Microsoft Power Automate
+  type: marketplace
+  direction: provider-built
+  marketplace: microsoft
+  evidence: https://learn.microsoft.com/en-us/connectors/skribblesign/
+  description: Microsoft Power Automate connector
+templates: []

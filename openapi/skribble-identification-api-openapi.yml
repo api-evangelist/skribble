@@ -1,0 +1,546 @@
+openapi: 3.2.0
+info:
+  title: Skribble Identification API
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  version: '1.0'
+  description: 'Operations tagged Identification across 3 of this provider''s published API definitions: skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.skribble.com/v3
+  description: Production - Switzerland
+- url: https://api.skribble.de/v3
+  description: Production - Germany
+- url: https://api.skribble.com/v2
+  description: Production - Switzerland
+- url: https://api.skribble.de/v2
+  description: Production - Germany
+security: []
+tags:
+- name: Identification
+  description: 'Endpoints for retrieving, checking status, and downloading identification evidence
+
+    collected during identification.'
+paths:
+  /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/status:
+    get:
+      tags:
+      - Identification
+      summary: Get Identification Evidence Status
+      description: 'Returns the current status of the identification evidence for the given
+
+        `SignatureRequest` and `evidence_id`.
+
+
+        **Requirements:**
+
+        - The business must have identification evidence enabled. If it is not,
+
+        the request fails with `403 Forbidden` (problem type `feature-not-enabled`).
+
+        - The identification process must have been initiated (`evidence_id` is required,
+
+        available in `signer_identity_data.evidence_id` of the `SignatureRequest` response).'
+      operationId: getIdentificationEvidenceStatus
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      - $ref: '#/components/parameters/EvidenceIDPath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentificationEvidenceStatusResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/StatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}:
+    get:
+      tags:
+      - Identification
+      summary: Get Identification Evidence JSON
+      description: 'Retrieves the full identification evidence record as JSON for the given
+
+        `SignatureRequest` and `evidence_id`.
+
+
+        **Requirements:**
+
+        - The business must have identification evidence enabled. If it is not,
+
+        the request fails with `403 Forbidden` (problem type `feature-not-enabled`).
+
+        - The identification process must be completed (`evidence_id` is required).'
+      operationId: getIdentificationEvidenceJSON
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      - $ref: '#/components/parameters/EvidenceIDPath'
+      responses:
+        '200':
+          description: 'Identification result for the completed identification process.
+
+            The exact schema depends on the identification provider configuration and is available on request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentificationEvidenceResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/EvidenceJSONResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/files:
+    get:
+      tags:
+      - Identification
+      summary: Get Identification Evidence Files
+      description: 'Downloads all files related to the identification evidence as a ZIP archive.
+
+
+        **Requirements:**
+
+        - The business must have identification evidence enabled. If it is not,
+
+        the request fails with `403 Forbidden` (problem type `feature-not-enabled`).
+
+        - The identification process must be completed (`evidence_id` is required).'
+      operationId: getIdentificationEvidenceFiles
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      - $ref: '#/components/parameters/EvidenceIDPath'
+      responses:
+        '200':
+          description: OK — ZIP archive containing all identification evidence files.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/jwt:
+    get:
+      tags:
+      - Identification
+      summary: Get Identification Evidence JWT
+      description: 'Retrieves the signed JWT for the identification evidence. Useful for
+
+        cryptographic verification or downstream integration purposes.
+
+
+        **Requirements:**
+
+        - The business must have identification evidence enabled. If it is not,
+
+        the request fails with `403 Forbidden` (problem type `feature-not-enabled`).
+
+        - The identification process must be completed (`evidence_id` is required).'
+      operationId: getIdentificationEvidenceJWT
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      - $ref: '#/components/parameters/EvidenceIDPath'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Signed JWT representing the identification evidence.
+              examples:
+                default:
+                  $ref: '#/components/examples/EvidenceJWTResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+components:
+  responses:
+    Forbidden:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests/4f43614a-de50-bfe1-2df3-4c881fc7840e
+            status: 403
+            message: Access denied
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 429
+            message: Too many requests
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests
+            status: 401
+            message: Unauthorized
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 500
+            message: Internal server error
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 503
+            message: Service unavailable
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/entity-not-found
+            method: GET
+            path: /v2/signature-requests/00000000-0000-0000-0000-000000000000
+            status: 404
+            message: SignatureRequest not found
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and only present
+
+        for errors that carry a machine-readable code.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g. `api.skribble.com`
+
+            and `api.skribble.de` for the production regions; other environments
+
+            use their respective hosts). Match on the path segment after `/problem/`
+
+            rather than the full URI. Known values:
+
+
+            - `https://api.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://api.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://api.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://api.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://api.skribble.com/problem/parameterized` — parameterized error with details
+
+            - `https://api.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://api.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v2/signature-requests
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: 'Optional machine-readable error key. Present for a subset of errors that carry
+
+            a stable code. Prefer matching on this field over parsing `message`, which is
+
+            not part of the stable contract.
+
+
+            Known keys, grouped by category:
+
+
+            Authentication (`403`):
+
+
+            - `error.auth.token_expired`: the access token has expired
+
+            - `error.auth.token_invalid`: the access token is malformed or otherwise invalid
+
+            - `error.auth.credentials_invalid`: the supplied credentials were rejected
+
+
+            Rate limiting (`429`):
+
+
+            - `error.rate_limit.exceeded`: a generic rate limit was exceeded
+
+            - `error.rate_limit.reminder`: the per-signature-request reminder limit was exceeded
+
+
+            File upload / attachment (`400`):
+
+
+            - `file.attachment.unsupported`: the uploaded attachment type is not supported
+
+            - `file.malware.detected`: malware was detected in the uploaded file
+
+
+            PDF processing (`400`):
+
+
+            - `file.pdf.general_error`: the PDF could not be loaded (corrupt or unreadable)
+
+            - `file.pdf.encryption.unknown_password`: the PDF is encrypted with an unknown password
+
+            - `file.pdf.encryption.no_changes_allowed`: the PDF''s signature permissions (DocMDP) do not allow the required changes
+
+            - `file.pdf.encryption.unknown_permissions`: the PDF is encrypted with an unknown permissions type
+
+            - `file.pdf.signature_verification.failed`: verification of an existing PDF signature failed
+
+
+            Signature request (`400`):
+
+
+            - `error.sr.last_document_cannot_be_removed`: the request would remove the only remaining document from the signature request; an SR must keep at least one document'
+          example: file.attachment.unsupported
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Validation failed for JSON object
+    IdentificationEvidenceResponse:
+      title: Identification Evidence Response
+      type: object
+      additionalProperties: true
+    IdentificationEvidenceStatusResponse:
+      title: Identification Evidence Status Response
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Internal ID of the evidence record.
+          example: 1
+        transactionCode:
+          type: string
+          description: Unique transaction code for the identification process.
+          example: '700580648'
+        accountId:
+          type: integer
+          description: Internal account ID associated with the identification.
+          example: 111
+        workflowId:
+          type: integer
+          description: Internal workflow ID used for the identification process.
+          example: 11
+        status:
+          type: string
+          description: Current status of the identification process.
+          enum:
+          - COMPLETED
+          - PENDING
+          - FAILED
+          example: COMPLETED
+        pendingReview:
+          description: Present if the identification is pending manual review, otherwise null.
+          oneOf:
+          - type: 'null'
+          - type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the identification was created.
+          example: '2025-08-25T12:26:24.227Z'
+        expiresAt:
+          type: string
+          format: date-time
+          description: Timestamp when the identification evidence expires.
+          example: '2025-08-26T12:26:24.226Z'
+        startedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the identification process was started by the signer.
+          example: '2025-08-25T12:26:27.134Z'
+        completedAt:
+          description: Timestamp when the identification process was completed. Null if not yet completed.
+          oneOf:
+          - type: 'null'
+          - type: string
+            format: date-time
+          example: '2025-08-25T12:27:58.382Z'
+        reviewedAt:
+          description: Timestamp when the identification was reviewed. Null if not reviewed.
+          oneOf:
+          - type: 'null'
+          - type: string
+            format: date-time
+  parameters:
+    SignatureIDPath:
+      name: SR_ID
+      in: path
+      description: Unique ID received when creating the Signature Request object
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: cccccccc-4a6a-a958-a42e-6ea4172a378b
+    EvidenceIDPath:
+      name: EVIDENCE_ID
+      in: path
+      description: Unique ID of the identification evidence record, available in the `signer_identity_data.evidence_id` field of the SignatureRequest response once identification is complete.
+      required: true
+      schema:
+        type: string
+      example: '700580648'
+  examples:
+    EvidenceJSONResponse:
+      summary: Completed identification evidence JSON
+      value:
+        identFormat: 1.0.0
+        transactionCode: '700580648'
+        initialTransactionCode: '700580648'
+        status: COMPLETED
+        flaggedAsFraud: false
+        forcedManualReview: false
+        pidDeleted: false
+        createdAt: '2025-08-25T12:26:24.227Z'
+        updatedAt: '2025-08-25T12:27:58.382Z'
+        transactionLog:
+        - status: INITIATED
+          timestamp: '2025-08-25T12:26:27.134Z'
+        - status: COMPLETED
+          timestamp: '2025-08-25T12:27:58.382Z'
+    StatusResponse:
+      summary: Completed identification evidence status
+      value:
+        id: 1
+        transactionCode: '700580648'
+        accountId: 111
+        workflowId: 11
+        status: COMPLETED
+        pendingReview: null
+        createdAt: '2025-08-25T12:26:24.227Z'
+        expiresAt: '2025-08-26T12:26:24.226Z'
+        startedAt: '2025-08-25T12:26:27.134Z'
+        completedAt: '2025-08-25T12:27:58.382Z'
+        reviewedAt: null
+    EvidenceJWTResponse:
+      summary: Signed JWT of the identification evidence
+      value: eyJhbGci3R[...]UtMDUifQ.eyJpZGVudEZ[...]MC4wI.NVJJA6z[...]hE5sE85Nko751w
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-sign-v3-openapi.yml
+- skribble-sign-v2-openapi.yml
+- skribble-sign-v3-openapi.yml

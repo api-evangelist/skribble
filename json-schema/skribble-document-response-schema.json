@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/skribble/main/json-schema/skribble-document-response-schema.json",
+  "title": "Document Response",
+  "description": "Document object Response.",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/skribble-sign-v2-openapi.yml#/components/schemas/DocumentResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "parent_id": {
+      "description": "ID of the previous version of the Document object. As documents are immutable, every change will create a new version, which is connected by the parent_id.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "title": {
+      "type": "string"
+    },
+    "content_type": {
+      "type": "string"
+    },
+    "size": {
+      "type": "integer"
+    },
+    "page_count": {
+      "type": "integer"
+    },
+    "page_width": {
+      "type": "integer"
+    },
+    "page_height": {
+      "type": "integer"
+    },
+    "signature_fields": {
+      "type": "array",
+      "description": "Optional detected Signature Formfields",
+      "items": {
+        "$ref": "#/$defs/SignatureFormField"
+      }
+    },
+    "owner": {
+      "type": "string"
+    },
+    "read_access": {
+      "type": "array",
+      "description": "Users or API keys with read access to this document.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "write_access": {
+      "type": "array",
+      "description": "Users or API keys with write access to this document.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "SignatureFormField": {
+      "title": "Signature Formfield",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Signature Formfield name"
+        },
+        "signed": {
+          "type": "boolean",
+          "description": "Signature status of Formfield",
+          "default": false
+        },
+        "positions": {
+          "type": "array",
+          "description": "List of positions where the Formfield is present",
+          "items": {
+            "$ref": "#/$defs/SignatureFormFieldPosition"
+          }
+        }
+      }
+    },
+    "SignatureFormFieldPosition": {
+      "title": "Formfield Position",
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "string",
+          "description": "Page number (0-indexed) where the field appears.\nThis is a String and not a number!"
+        },
+        "height": {
+          "type": "number",
+          "description": "Height of the field in pixels."
+        },
+        "width": {
+          "type": "number",
+          "description": "Width of the field in pixels."
+        },
+        "x": {
+          "type": "number",
+          "description": "X-coordinate (pixels from left) of field."
+        },
+        "y": {
+          "type": "number",
+          "description": "Y-coordinate (pixels from top) of field."
+        },
+        "rotation": {
+          "type": "number",
+          "description": "Defines a rotation of the field content. \nIf used in context with a form field, then only the values 0, 90, 180, 270 are legal.\nOtherwise every value is legal. The rotation is applied counter clockwise."
+        }
+      }
+    }
+  }
+}

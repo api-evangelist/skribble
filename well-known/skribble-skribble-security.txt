@@ -1,0 +1,37 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+# Skribble security team email address
+Contact: mailto:security@skribble.com
+Preferred-Languages: en, de, es
+
+# Have you found a vulnerability?
+# Please refer to our Vulnerabiity Disclosure Policy
+Policy: https://www.skribble.com/security/disclosure
+
+# We accept PGP-encrypted emails, you can find our public key below
+Encryption: https://www.skribble.com/security/pgp.asc
+Encryption: https://keys.openpgp.org/vks/v1/by-fingerprint/136B97F06F7471D09BAEC631092E4B4A1784443D
+
+# Our security acknowledgements page
+Acknowledgments: https://www.skribble.com/security/acknowledgements
+
+# Canonical URI
+Canonical: https://www.skribble.com/.well-known/security.txt
+Expires: 2027-08-10T02:59:00.000Z
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEE2uX8G90cdCbrsYxCS5LSheERD0FAmT6FwYACgkQCS5LSheE
+RD0qGA/+PsSQFGSQfFVPB34liBSiLA9pd3CM4N2Ze7cB3Y+Wfy5HWegB66ssnEg2
+2hMlwMuSQ/lYNqdFrzgGbA1etn5l0nUM5nFsIweZFSIRvnk8o/6xnkcDiNN8bEAg
+X3LUYCijIAHICXQGj3/LVjTakkOXaPYc4cNBDPFGyu15m9qCU3ave/L9iw1r22SP
+XWWjQ7k839YnYWETG6VLGd/NXgDbo5wxqPtCnp8+9l+XYqlXgdMwiZOk9ob6JQGi
+NtSUy+rSTCTu1UsY4TWSr5L4cg0nT5spSjWUFlK2drdyww2DMEa8QwmcRGLGLIWT
+tFBmjpck5MHXbLYuZCOsQFCRDpJnlnrMOgkT/tZHurrw6eENKRX5tqlbCzX4mUpn
+mNsICWGMUg0eTC9pDsrcCprJE+puUzWPgmvRhg37mNlt4B5kmk1npy5rPqi/lEla
+zjj5fmzix6yYVQIwgdLzC//dsQ8QCbOlY0ewAOWvecQdXyN5Wi25sPgMX0XnyZIi
+Vw3QZzNM8X9ljCrjh/2F0sVR9bys/j1ET3NI37ocLGvijYTBs8WaPbFJH4fAVpzm
+b4MzeKcJ7q78Bfiz8xzQPAsQ9JdBnfq1FI1C9vzXX8mI7Hqv/JFAVwiHKPk3hq5f
+Rh4iHmdNmJLi+t7UAcBRcOf7PRXrtjEGmAlYvCm/o2D/FXfXxns=
+=bD15
+-----END PGP SIGNATURE-----

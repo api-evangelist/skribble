@@ -1,23 +1,916 @@
 aid: skribble
+
 name: Skribble
-description: 'Skribble is a company surfaced via the API Evangelist harvest backlog (source: kin-score-markets)
-  and added to the network as a stub for full-pipeline profiling.'
+
+description: Skribble (Skribble AG) is a Swiss electronic signature provider offering simple (SES/EES), advanced (AES/FES) and qualified (QES)
+  electronic signatures that are legally valid under Swiss ZertES and EU eIDAS law, hosted in Switzerland and GDPR-compliant. Beyond its web app,
+  Skribble publishes a developer portal at api.docs.skribble.com documenting the Sign API v2 (stable), Sign API v3 (preview, with draft workflows
+  and multi-document requests) and the Validation API v1 for verifying signed PDFs and certificates.
+
 url: https://raw.githubusercontent.com/api-evangelist/skribble/refs/heads/main/apis.yml
+
 x-type: company
+
 x-source: harvest:kin-score-markets
-x-tier: stub
-x-tier-reason: harvest
+
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-18 (modular-v1; was harvest)
+
 specificationVersion: '0.20'
+
 created: '2026-10-18'
+
 modified: '2026-10-18'
+
 tags:
 - Company
-apis: []
+- E-Signature
+- Digital Signature
+- Qualified Electronic Signature
+- Signature Validation
+- eIDAS
+- Switzerland
+
+tags_raw:
+- Company
+- Electronic Signatures
+- Digital Signatures
+- Qualified Electronic Signature
+- Document Signing
+- Signature Validation
+- eIDAS
+- Switzerland
+
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+
+image: https://images.prismic.io/covebe/aUkWynNYClf9okDs_ThumbnailHomeEN.webp?auto=format,compress&rect=0,0,2400,1260&w=1200&h=630
+
 common:
+- type: AgenticAccess
+  url: agentic-access/skribble-agentic-access.yml
+- type: RateLimits
+  url: rate-limits/skribble-rate-limits.yml
+- type: Plans
+  url: plans/skribble-plans-pricing.yml
+- type: Spectral
+  url: rules/skribble-rules.yml
+- type: JSONLD
+  url: json-ld/skribble-context.jsonld
+- type: Vocabulary
+  url: vocabulary/skribble-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DataModel
+  url: data-model/skribble-data-model.yml
+- type: Conventions
+  url: conventions/skribble-conventions.yml
+- type: Sandbox
+  url: sandbox/skribble-sandbox.yml
+- type: Deprecation
+  url: lifecycle/skribble-lifecycle.yml
+- type: Lifecycle
+  url: lifecycle/skribble-lifecycle.yml
+- type: ErrorCatalog
+  url: errors/skribble-problem-types.yml
+- type: Conformance
+  url: conformance/skribble-conformance.yml
+- type: Overlay
+  url: overlays/skribble-sign-v2-overlay.yaml
+- type: LLMsTxt
+  url: llms/skribble-llms.txt
+- type: SecurityTxt
+  url: well-known/skribble-skribble-security.txt
+- type: SecurityTxt
+  url: well-known/skribble-security.txt
+- type: WellKnown
+  url: well-known/skribble-well-known.yml
+- type: Hosts
+  url: hosts/skribble-hosts.yml
+- type: IntegrationEdges
+  url: integrations/skribble-integration-edges.yml
+- type: Vendors
+  url: vendors/skribble-vendors.yml
+- type: SDKs
+  url: packages/skribble-packages.yml
+- type: Packages
+  url: packages/skribble-packages.yml
+- type: Authentication
+  url: authentication/skribble-authentication.yml
 - type: Website
-  url: https://skribble.com
+  url: https://www.skribble.com/en-eu/
+- type: DeveloperPortal
+  url: https://api.docs.skribble.com/
+- type: Documentation
+  url: https://api.docs.skribble.com/introduction
+- type: APIReference
+  url: https://api.docs.skribble.com/api/sign-v2
+- type: GettingStarted
+  url: https://api.docs.skribble.com/sign-api-quick-start
+- type: Documentation
+  url: https://docs.skribble.com/business-admin/
+- type: Support
+  url: https://help.skribble.com/de
+- type: StatusPage
+  url: https://status.skribble.com/
+- type: Blog
+  url: https://www.skribble.com/en-eu/blog/category/all/page/1/
+- type: Pricing
+  url: https://www.skribble.com/en-eu/pricing/
+- type: SignUp
+  url: https://my.skribble.com/business/signup/?lang=en
+- type: Login
+  url: https://my.skribble.com/login/
+- type: Integrations
+  url: https://www.skribble.com/en-eu/integrations/
+- type: Security
+  url: https://www.skribble.com/en-eu/security/
+- type: Leadership
+  url: https://www.skribble.com/en-eu/team/
+- type: TermsOfService
+  url: https://www.skribble.com/en-eu/terms-of-use/
+- type: PrivacyPolicy
+  url: https://www.skribble.com/en-eu/privacy/
+- type: VulnerabilityDisclosure
+  url: security/skribble-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/skribble-domain-security.yml
+
+apis:
+- aid: skribble:skribble-access-api
+  name: Skribble Access API
+  description: Endpoints for authentication, authorization, and user access management.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Access
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-access-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-additional-information-api
+  name: Skribble Additional Information API
+  description: Endpoints providing extra metadata or supplementary details for documents.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Additional Information
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-additional-information-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-billing-and-credits-api
+  name: Skribble Billing and Credits API
+  description: Endpoints for managing account credits, billing information, and payment operations.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Billing and Credits
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-billing-and-credits-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-document-api
+  name: Skribble Document API
+  description: Endpoints for uploading and managing documents.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Document
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-document-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-identification-api
+  name: Skribble Identification API
+  description: >-
+    Endpoints for retrieving, checking status, and downloading identification evidence
+
+    collected during identification.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Identification
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-identification-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-monitoring-api
+  name: Skribble Monitoring API
+  description: Endpoints for monitoring system health.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Monitoring
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-monitoring-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-report-api
+  name: Skribble Report API
+  description: Endpoints for signature activity reporting.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Report
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-report-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-reports-api
+  name: Skribble Reports API
+  description: >-
+    Endpoints for generating, retrieving, and managing reports related to document processing.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-reports-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-seal-api
+  name: Skribble Seal API
+  description: Endpoints for applying electronic seals to documents.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Seal
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-seal-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-sendto-api
+  name: Skribble Send To API
+  description: Endpoints for the Send-To signing flow.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - SendTo
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-sendto-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-signature-api
+  name: Skribble Signature API
+  description: Endpoints for creating and managing signature requests.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Signature
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-signature-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-signature-attachment-api
+  name: Skribble Signature Attachment API
+  description: Endpoints for managing attachments on a signature request.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Signature Attachment
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-signature-attachment-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-signature-handling-api
+  name: Skribble Signature Handling API
+  description: Endpoints for handling signature requests and callbacks.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Signature Handling
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-signature-handling-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-signature-observer-api
+  name: Skribble Signature Observer API
+  description: Endpoints for managing observers on a signature request.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Signature Observer
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-signature-observer-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-signature-signer-api
+  name: Skribble Signature Signer API
+  description: Endpoints for managing signers on a signature request.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Signature Signer
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-signature-signer-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-user-api
+  name: Skribble User API
+  description: Endpoints for user information and signature quality queries.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-user-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+- aid: skribble:skribble-validation-api
+  name: Skribble Validation API
+  description: Endpoints to validate documents, data formats, and signatures.
+  humanURL: https://api.docs.skribble.com/api/sign-v2
+  baseURL: https://api.skribble.com/v2
+  tags:
+  - Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/skribble-validation-api-openapi.yml
+  - type: Documentation
+    url: https://api.docs.skribble.com/sign-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-report-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-update-signature-request-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-identification-evidence-status-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-document-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-create-signature-request-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/api/sign-v3/migrate-from-v2
+  - type: JSONSchema
+    url: json-schema/skribble-signature-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-recipient-schema.json
+  - type: Documentation
+    url: https://api.docs.skribble.com/validation-api-quick-start
+  - type: JSONSchema
+    url: json-schema/skribble-document-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-signature-validation-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-usage-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-validation-infos-response-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-billing-credit-infos-schema.json
+  - type: JSONSchema
+    url: json-schema/skribble-login-request-schema.json
+x-coverage:
+  state: covered
+  reason: identity-verified
+  detail: Website and link pointers verified by fetch on 2026-10-18; github.com/skribble is an unrelated personal account (Kris) and was not recorded.
+  evidence:
+  - url: https://www.skribble.com/en-eu/
+    status: 200
+  - url: https://api.docs.skribble.com/introduction
+    status: 200
+  - url: https://status.skribble.com/
+    status: 200
+  - url: https://api.skribble.com/v2/
+    status: 401
+  - url: https://github.com/skribble
+    status: 200
+    note: not the company
+x-enrichment:
+  date: '2026-10-18'
+  status: enriched
+  artifacts_added: 66
+  pass: modular-v1
+  engine: identity=anthropic,contract=anthropic,surfaces=anthropic,docs=deepseek,regulatory=anthropic

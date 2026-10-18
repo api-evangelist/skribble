@@ -1,0 +1,34 @@
+generated: '2026-10-18'
+method: searched
+source: https://api.docs.skribble.com/limits
+name: Skribble rate limits
+limits:
+- name: General rate limit
+  limit_text: "All Skribble APIs enforce rate limiting. Exceeding a limit returns 429 Too Many Requests ."
+  window: "unknown"
+  scope: "per-api-key"
+  response_headers: Retry-After
+  status_code: 429
+  evidence: "All Skribble APIs enforce rate limiting. Exceeding a limit returns 429 Too Many Requests ."
+  source: https://api.docs.skribble.com/limits
+- name: Login endpoint
+  endpoint: POST /access/login
+  limit_text: "POST /access/login Rate limited; avoid re-authenticating on every request; cache tokens for their ~20-minute lifetime."
+  window: "unknown"
+  scope: "per-api-key"
+  response_headers: Retry-After
+  status_code: 429
+  evidence: "POST /access/login is rate limited; avoid re-authenticating on every request; cache tokens for their ~20-minute lifetime."
+  source: https://api.docs.skribble.com/limits
+- name: Signature reminder
+  endpoint: POST /signature-requests/{id}/remind
+  limit_text: "POST /signature-requests/{id}/remind One reminder per signer per hour. The API enforces this server-side; exceeding it returns 429 ."
+  window: "1 hour"
+  max: 1
+  scope: "per-signer-per-signature-request"
+  response_headers: Retry-After
+  status_code: 429
+  evidence: "One reminder per signer per hour. The API enforces this server-side; exceeding it returns 429 ."
+  source: https://api.docs.skribble.com/limits
+limit_count: 3
+note: "Specific numeric limits (requests per minute/hour) are not published in the OpenAPI specs. Contact support@skribble.com if you need exact thresholds for capacity planning."

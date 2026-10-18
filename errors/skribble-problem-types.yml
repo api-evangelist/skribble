@@ -1,0 +1,57 @@
+generated: '2026-10-18'
+method: searched
+source: https://api.docs.skribble.com/error-handling
+format: problem+json
+envelope:
+  type: type
+  method: method
+  path: path
+  status: status
+  message: message
+  key: key
+problems:
+- status: 400
+  title: Bad Request
+  type: https://api.skribble.com/problem/problem-with-message
+  description: "Invalid JSON, missing required fields, validation errors, unsupported attachment types, malformed PDF"
+  remediation: "Check the API reference for required fields and value constraints"
+- status: 401
+  title: Unauthorized
+  type: https://api.skribble.com/problem/problem-with-message
+  description: "Missing, invalid, or expired bearer token"
+  remediation: "Obtain a new token by calling /access/login endpoint"
+- status: 403
+  title: Forbidden
+  type: https://api.skribble.com/problem/problem-with-message
+  description: "Access denied or authentication error for the requested operation"
+  remediation: "Verify API key has required access"
+- status: 404
+  title: Not Found
+  type: https://api.skribble.com/problem/entity-not-found
+  description: "Resource does not exist or has been deleted"
+  remediation: "Check resource ID and ensure it exists"
+- status: 406
+  title: Not Acceptable
+  type: https://api.skribble.com/problem/problem-with-message
+  description: "Content type not supported, or a required attribute is missing"
+  remediation: "Check Accept and Content-Type headers"
+- status: 422
+  title: Unprocessable Entity
+  type: https://api.skribble.com/problem/problem-with-message
+  description: "PDF document could not be rendered (e.g. for a page preview)"
+  remediation: "Check PDF file format and content"
+- status: 429
+  title: Too Many Requests
+  type: https://api.skribble.com/problem/limit-exceeded
+  description: "Rate limit exceeded"
+  remediation: "Implement backoff and retry logic, check Retry-After header"
+- status: 500
+  title: Internal Server Error
+  type: https://api.skribble.com/problem/problem-with-message
+  description: "Server error"
+  remediation: "Retry with exponential backoff"
+- status: 503
+  title: Service Unavailable
+  type: https://api.skribble.com/problem/problem-with-message
+  description: "Service is temporarily down"
+  remediation: "Retry later"

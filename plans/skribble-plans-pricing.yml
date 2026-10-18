@@ -1,0 +1,87 @@
+generated: '2026-10-18'
+method: searched
+generator: extract-docs-artifacts.py (deepseek)
+source: https://www.skribble.com/en-eu/pricing/
+sources:
+- https://www.skribble.com/en-eu/pricing/
+- https://help.skribble.com/de/%C3%A4nderungen-des-free-plans
+- https://docs.skribble.com/business-admin/billing/change
+- https://docs.skribble.com/business-admin/billing/invoice-contact
+name: Skribble pricing
+plans:
+- name: Starter
+  price_text: from € 0
+  price: 0
+  description: For individual signatures and getting started – legally valid, no subscription required. Ideal for self-employed professionals.
+  billing_period: month
+  features:
+  - No subscription, pay per e-signature
+  - All signature standards (SES, AES, QES)
+  - Set signing order
+  - Invitees sign without an account
+  - For individual users
+  limits:
+  - name: users
+    limit_text: 1 user / month
+  - name: AES/QES signatures
+    limit_text: Not available
+- name: Team
+  price_text: € 23 per user/month
+  price: 23
+  description: Enable your team with all e-signature standards (SES, AES, QES) for enhanced security.
+  billing_period: month
+  features:
+  - Unlimited simple e-signatures (SES)
+  - AES – advanced electronic signature
+  - QES – qualified electronic signature
+  - Manage company settings
+  - Add attachments and observers
+  - Download signature protocol as proof (audit, compliance)
+  - Send signature reminders
+  limits:
+  - name: users
+    limit_text: Up to 20
+  - name: AES/QES signatures
+    limit_text: 72 included Per year and user
+- name: Pro
+  price_text: € 36 per user/month
+  price: 36
+  description: Ensure legal validity with extensive QES usage and integrate signing processes into your current tools.
+  billing_period: month
+  features:
+  - All of Team
+  - Delete documents automatically
+  - Company branding (Charged extra)
+  - Integrate tools via API
+  - Sign from Word, Excel, Sharepoint, One Drive and Google Drive
+  - Single sign-on (SSO, charged extra)
+  limits:
+  - name: users
+    limit_text: Up to 20
+  - name: AES/QES signatures
+    limit_text: 120 included Per year and user
+- name: Scale
+  price_text: Request a quote
+  description: Custom e-signing solution for bigger teams with high signing volumes.
+  features:
+  - All of Pro plan
+  - Expert advice on your use case
+  - Support with rolling out e-signing in your company
+  - Restrict e-signature standards
+  - Keep track of signing costs with cost centres
+  - Additional security
+  - Sign from Salesforce
+  limits:
+  - name: users
+    limit_text: On request
+  - name: AES/QES signatures
+    limit_text: On request
+audience: business-product
+pricing_basis: per-seat
+currency: EUR
+delivery:
+  delivery: managed
+  evidence: "Skribble is a hosted SaaS platform for electronic signatures"
+note: 'Page 2 mentions "Individual-Plan" with pay-per-use pricing for signatures: SES: 1.00 EUR or CHF, AES: 3.00 EUR or CHF, QES: 4.50 EUR or
+  CHF, but this appears to be a special version of the Starter plan mentioned in the help article.'
+docs: https://www.skribble.com/en-eu/pricing/

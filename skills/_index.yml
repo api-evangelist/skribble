@@ -1,0 +1,42 @@
+generated: '2026-10-18'
+method: generated
+generator: extract-docs-artifacts.py skills (deepseek)
+source: openapi/skribble-sign-v2-openapi.yml
+skills:
+- file: skills/skribble-upload-and-retrieve-document.md
+  name: skribble-upload-and-retrieve-document
+  api: openapi/skribble-sign-v2-openapi.yml
+  operations:
+  - uploadDocument
+  - getDocumentMetadata
+  - getDocumentContent
+- file: skills/skribble-create-and-manage-signature-request.md
+  name: skribble-create-and-manage-signature-request
+  api: openapi/skribble-sign-v2-openapi.yml
+  operations:
+  - createSignatureRequest
+  - addDocumentInSignatureRequest
+  - initiateSignatureRequest
+  - getSignatureRequestDetails
+  - withdrawSignatureRequest
+- file: skills/skribble-manage-signature-signer.md
+  name: skribble-manage-signature-signer
+  api: openapi/skribble-sign-v2-openapi.yml
+  operations:
+  - addSignatureSigner
+  - removeSignatureSigner
+- file: skills/skribble-add-and-manage-signature-attachments.md
+  name: skribble-add-and-manage-signature-attachments
+  api: openapi/skribble-sign-v2-openapi.yml
+  operations:
+  - createSignatureAttachment
+  - getSignatureAttachmentContent
+  - deleteSignatureAttachment
+- file: skills/skribble-send-to-request-workflow.md
+  name: skribble-send-to-request-workflow
+  api: openapi/skribble-sign-v2-openapi.yml
+  operations:
+  - createSendTo
+  - trackSendTo
+  - downloadSendTo
+  - deleteSendTo

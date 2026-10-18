@@ -1,0 +1,4 @@
+generated: '2026-10-18'
+method: none
+note: "Skribble uses API key authentication with JWT bearer tokens, not OAuth scopes. Authentication is documented at https://api.docs.skribble.com/authentication"
+scopes: []

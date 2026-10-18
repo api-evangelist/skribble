@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/skribble/main/json-schema/skribble-billing-credit-infos-schema.json",
+  "title": "BillingCreditInfos",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/skribble-validation-v1-openapi.yml#/components/schemas/BillingCreditInfos",
+  "type": "object",
+  "properties": {
+    "validFrom": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 date-time in UTC"
+    },
+    "consumptions": {
+      "type": "array",
+      "description": "Array of consumptions, each with endpoint details and its credit cost",
+      "items": {
+        "$ref": "#/$defs/CreditInfo"
+      }
+    }
+  },
+  "$defs": {
+    "CreditInfo": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "SKU of the API endpoint"
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "API endpoint"
+        },
+        "credits": {
+          "type": "integer",
+          "description": "Credit usage per successful API endpoint call"
+        }
+      }
+    }
+  }
+}

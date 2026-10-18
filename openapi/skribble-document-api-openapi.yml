@@ -1,0 +1,860 @@
+openapi: 3.2.0
+info:
+  title: Skribble Document API
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  version: '1.0'
+  description: 'Operations tagged Document across 3 of this provider''s published API definitions: skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.skribble.com/v3
+  description: Production - Switzerland
+- url: https://api.skribble.de/v3
+  description: Production - Germany
+- url: https://api.skribble.com/v2
+  description: Production - Switzerland
+- url: https://api.skribble.de/v2
+  description: Production - Germany
+security: []
+tags:
+- name: Document
+  description: Endpoints for uploading and managing documents.
+paths:
+  /documents:
+    post:
+      tags:
+      - Document
+      summary: Upload a Document
+      description: 'Upload using a **Base64 encoded** file as `content`.
+
+
+        **Content size limits**:
+
+        Very large uploads are rejected by the gateway in front of the API
+
+        before the request reaches it, returning a `403 Forbidden` response.
+
+        This currently returns a plain body instead of the standard
+
+        Problem+JSON error envelope used elsewhere in this API; a fix to align
+
+        it is planned.'
+      operationId: uploadDocument
+      security:
+      - bearer: []
+      requestBody:
+        description: Request body to create a Document object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadDocumentRequest'
+            examples:
+              Base64:
+                $ref: '#/components/examples/Base64'
+              FileURL:
+                $ref: '#/components/examples/FileURL'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/Sample'
+                form:
+                  $ref: '#/components/examples/SamplePDFForm'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/ForbiddenOrPayloadTooLarge'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    get:
+      tags:
+      - Document
+      summary: List All Accessible Documents
+      description: Returns an array of all accessible `Document` objects.
+      operationId: getDocuments
+      security:
+      - bearer: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: List of Documents.
+                items:
+                  $ref: '#/components/schemas/DocumentResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/SampleDocumentArray'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /documents/{DOC_ID}:
+    get:
+      tags:
+      - Document
+      summary: Get Document Metadata
+      description: Fetches the metadata for the `Document` identified by its ID.
+      operationId: getDocumentMetadata
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/DocumentIDPath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/Sample'
+                form:
+                  $ref: '#/components/examples/SamplePDFForm'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    delete:
+      tags:
+      - Document
+      summary: Delete a Document
+      description: 'Deletes a `Document` by its ID. Deletion behaves similarly to deleting a
+
+        `SignatureRequest` and does not necessarily remove the object from the
+
+        system immediately.
+
+
+        If more than one participant is involved, the DELETE request only removes
+
+        the current user from the `Document`.
+
+
+        The system permanently removes the `Document` once the last user deletes it
+
+        via the Skribble web application.
+
+
+        **Async cascade note:** If the `Document`''s parent `SignatureRequest` was
+
+        recently deleted, the server-side cascade that removes associated documents
+
+        runs asynchronously. During this window the document is still listed by
+
+        `GET /documents` but returns `403 Forbidden` on delete attempts. Retry
+
+        after a few seconds — the document will either have been removed by the
+
+        cascade or the delete will succeed.'
+      operationId: deleteDocument
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/DocumentIDPath'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /documents/{DOC_ID}/content:
+    get:
+      tags:
+      - Document
+      summary: Get Document Content
+      description: 'Downloads the content of the document identified by its ID. Returns either
+
+        a PDF binary or a JSON object containing a Base64-encoded PDF.'
+      operationId: getDocumentContent
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/DocumentIDPath'
+      responses:
+        '200':
+          description: PDF or JSON with Base64-encoded PDF
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentContentResponse'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /documents/{DOC_ID}/pages/{PAGE_ID}:
+    get:
+      tags:
+      - Document
+      summary: Get Document Page Preview
+      description: 'Returns a preview image for a specific page of the uploaded PDF document.
+
+        Page numbering starts at **0** for the first page.
+
+
+        > Use the optional `scale` parameter to control the preview size:
+
+        > `scale=100` returns a full-size preview, while `scale=20` returns a
+
+        > thumbnail.'
+      operationId: getDocumentPreview
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/DocumentIDPath'
+      - $ref: '#/components/parameters/PageIDPath'
+      - $ref: '#/components/parameters/ScaleFactor'
+      responses:
+        '200':
+          description: Preview image
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+components:
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and only present
+
+        for errors that carry a machine-readable code.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g. `api.skribble.com`
+
+            and `api.skribble.de` for the production regions; other environments
+
+            use their respective hosts). Match on the path segment after `/problem/`
+
+            rather than the full URI. Known values:
+
+
+            - `https://api.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://api.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://api.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://api.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://api.skribble.com/problem/parameterized` — parameterized error with details
+
+            - `https://api.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://api.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v2/signature-requests
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: 'Optional machine-readable error key. Present for a subset of errors that carry
+
+            a stable code. Prefer matching on this field over parsing `message`, which is
+
+            not part of the stable contract.
+
+
+            Known keys, grouped by category:
+
+
+            Authentication (`403`):
+
+
+            - `error.auth.token_expired`: the access token has expired
+
+            - `error.auth.token_invalid`: the access token is malformed or otherwise invalid
+
+            - `error.auth.credentials_invalid`: the supplied credentials were rejected
+
+
+            Rate limiting (`429`):
+
+
+            - `error.rate_limit.exceeded`: a generic rate limit was exceeded
+
+            - `error.rate_limit.reminder`: the per-signature-request reminder limit was exceeded
+
+
+            File upload / attachment (`400`):
+
+
+            - `file.attachment.unsupported`: the uploaded attachment type is not supported
+
+            - `file.malware.detected`: malware was detected in the uploaded file
+
+
+            PDF processing (`400`):
+
+
+            - `file.pdf.general_error`: the PDF could not be loaded (corrupt or unreadable)
+
+            - `file.pdf.encryption.unknown_password`: the PDF is encrypted with an unknown password
+
+            - `file.pdf.encryption.no_changes_allowed`: the PDF''s signature permissions (DocMDP) do not allow the required changes
+
+            - `file.pdf.encryption.unknown_permissions`: the PDF is encrypted with an unknown permissions type
+
+            - `file.pdf.signature_verification.failed`: verification of an existing PDF signature failed
+
+
+            Signature request (`400`):
+
+
+            - `error.sr.last_document_cannot_be_removed`: the request would remove the only remaining document from the signature request; an SR must keep at least one document'
+          example: file.attachment.unsupported
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Validation failed for JSON object
+    SignatureFormField:
+      title: Signature Formfield
+      type: object
+      properties:
+        name:
+          type: string
+          description: Signature Formfield name
+          example: Signature1
+        signed:
+          type: boolean
+          description: Signature status of Formfield
+          default: false
+          example: false
+        positions:
+          type: array
+          description: List of positions where the Formfield is present
+          items:
+            $ref: '#/components/schemas/SignatureFormFieldPosition'
+    PayloadTooLarge:
+      type: string
+      description: 'Plain-text or HTML body returned by the gateway in front of the API when
+
+        a request is rejected for exceeding the maximum allowed size, before it
+
+        reaches the API. Pending a fix to align this with the standard
+
+        Problem+JSON envelope used elsewhere in this API.'
+    DocumentResponse:
+      title: Document Response
+      type: object
+      description: Document object Response.
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 00000000-1212-9546-6542-323232323232
+        parent_id:
+          description: ID of the previous version of the Document object. As documents are immutable, every change will create a new version, which is connected by the parent_id.
+          type: string
+          format: uuid
+          example: 12345678-1234-aaaa-ffff-0123456789af
+        title:
+          type: string
+          example: Example contract PDF
+        content_type:
+          type: string
+          example: application/pdf
+        size:
+          type: integer
+          example: 29010
+        page_count:
+          type: integer
+          example: 1
+        page_width:
+          type: integer
+          example: 600
+        page_height:
+          type: integer
+          example: 840
+        signature_fields:
+          type: array
+          description: Optional detected Signature Formfields
+          items:
+            $ref: '#/components/schemas/SignatureFormField'
+        owner:
+          type: string
+          example: api_demo_example
+        read_access:
+          type: array
+          description: Users or API keys with read access to this document.
+          items:
+            type: string
+          example:
+          - api_demo_example
+        write_access:
+          type: array
+          description: Users or API keys with write access to this document.
+          items:
+            type: string
+          example:
+          - api_demo_example
+        created_at:
+          type: string
+          format: date-time
+          example: '2099-12-12T12:12:12.000Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2099-12-12T12:12:12.000Z'
+    UploadDocumentRequest:
+      title: Upload Document Request
+      allOf:
+      - type: object
+        required:
+        - title
+        properties:
+          title:
+            type: string
+            description: Title of the document.
+            example: Example contract PDF
+          read_access:
+            type: array
+            description: Give specific users or API keys read access to this document.
+            items:
+              type: string
+            example:
+            - backoffice@company_a.com
+            - api_demo_example
+          write_access:
+            type: array
+            description: Give specific users or API keys write access to this document.
+            items:
+              type: string
+            example:
+            - api_demo_example
+      - oneOf:
+        - type: object
+          title: Base64 Content
+          description: Provide the document as Base64-encoded content.
+          required:
+          - content
+          properties:
+            content:
+              type: string
+              format: byte
+              description: Base64 encoded bytes of the document.
+              example: SGVsbG8gd29ybGQh
+            content_type:
+              type: string
+              description: Content type of bytes sent in content. Currently, only application/pdf is supported.
+              example: application/pdf
+        - type: object
+          title: File URL
+          description: Provide a publicly accessible URL for the document.
+          required:
+          - file_url
+          properties:
+            file_url:
+              type: string
+              format: uri
+              description: Publicly accessible URL for document download.
+              example: https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
+    SignatureFormFieldPosition:
+      title: Formfield Position
+      type: object
+      properties:
+        page:
+          type: string
+          description: 'Page number (0-indexed) where the field appears.
+
+            This is a String and not a number!'
+          example: '0'
+        height:
+          type: number
+          description: Height of the field in pixels.
+          example: 70
+        width:
+          type: number
+          description: Width of the field in pixels.
+          example: 150
+        x:
+          type: number
+          description: X-coordinate (pixels from left) of field.
+          example: 350
+        y:
+          type: number
+          description: Y-coordinate (pixels from top) of field.
+          example: 240
+        rotation:
+          type: number
+          description: "Defines a rotation of the field content. \nIf used in context with a form field, then only the values 0, 90, 180, 270 are legal.\nOtherwise every value is legal. The rotation is applied counter clockwise."
+          example: 0
+    DocumentContentResponse:
+      title: Document Content Response
+      type: object
+      description: Document Content Response as JSON
+      properties:
+        content_type:
+          type: string
+          example: application/pdf
+        content_size:
+          type: integer
+          example: 29010
+        content:
+          type: string
+          format: byte
+          description: Base64 encoded bytes of the document.
+          example: U29tZUJhc2U2NEVuY29kZWRJbWFnZQ==
+  responses:
+    NotAcceptable:
+      description: Not acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 406
+            message: Content type not supported
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/entity-not-found
+            method: GET
+            path: /v2/signature-requests/00000000-0000-0000-0000-000000000000
+            status: 404
+            message: SignatureRequest not found
+    Forbidden:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests/4f43614a-de50-bfe1-2df3-4c881fc7840e
+            status: 403
+            message: Access denied
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests
+            status: 401
+            message: Unauthorized
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 500
+            message: Internal server error
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 400
+            message: Validation failed for JSON object
+    ForbiddenOrPayloadTooLarge:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          examples:
+            AccessDenied:
+              value:
+                type: https://api.skribble.com/problem/problem-with-message
+                method: GET
+                path: /v2/signature-requests/4f43614a-de50-bfe1-2df3-4c881fc7840e
+                status: 403
+                message: Access denied
+            FeatureNotEnabled:
+              value:
+                type: https://api.skribble.com/problem/feature-not-enabled
+                method: POST
+                path: /v2/signature-requests
+                status: 403
+                message: '''expires_at'' is not supported. Feature is not enabled.'
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/PayloadTooLarge'
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 429
+            message: Too many requests
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 503
+            message: Service unavailable
+  parameters:
+    PageIDPath:
+      name: PAGE_ID
+      in: path
+      description: Page ID of the document
+      required: true
+      schema:
+        type: integer
+      example: 0
+    ScaleFactor:
+      name: scale
+      in: query
+      description: The scaling factor for the image.
+      required: false
+      schema:
+        type: number
+        default: 100
+        minimum: 0
+      example: 20
+    DocumentIDPath:
+      name: DOC_ID
+      in: path
+      description: Unique ID received when creating the Document Request object
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: f1e2d3c4-7b8a-4e6f-9d3b-123456789abc
+  examples:
+    Base64:
+      summary: Base64-encoded content
+      value:
+        title: Example contract PDF
+        content: SGVsbG8gd29ybGQh
+        content_type: application/pdf
+    Sample:
+      summary: Sample PDF document
+      value:
+        id: 00000000-1212-9546-6542-323232323232
+        title: Example contract PDF
+        content_type: application/pdf
+        size: 29010
+        page_count: 1
+        page_width: 600
+        page_height: 840
+        owner: api_demo_example
+        read_access:
+        - api_demo_example
+        write_access:
+        - api_demo_example
+        created_at: '2099-12-12T12:12:12.000Z'
+        updated_at: '2099-12-12T12:12:12.000Z'
+    SamplePDFForm:
+      summary: Sample PDF with signature fields
+      value:
+        id: 8e725b0d-379c-5fd7-e7b7-ff369ac0c497
+        parent_id: 461a654e-a2f5-7511-9e80-544abd6216e8
+        title: Employment Contract
+        content_type: application/pdf
+        size: 266626
+        page_count: 3
+        page_width: 596
+        page_height: 843
+        signature_fields:
+        - name: Signature1
+          signed: true
+          positions:
+          - x: 75
+            y: 470
+            width: 112
+            height: 52
+            page: '2'
+            rotation: 0
+        owner: api_demo_example
+        read_access:
+        - api_demo_example
+        write_access:
+        - api_demo_example
+        created_at: '2024-11-18T12:37:45.842Z'
+        updated_at: '2024-11-18T12:37:45.842Z'
+    SampleDocumentArray:
+      value:
+      - id: 00000000-1212-9546-6542-323232323232
+        title: Example contract PDF
+        content_type: application/pdf
+        size: 29010
+        page_count: 1
+        page_width: 600
+        page_height: 840
+        owner: api_demo_example
+        read_access:
+        - api_demo_example
+        write_access:
+        - api_demo_example
+        created_at: '2099-12-12T12:12:12.000Z'
+        updated_at: '2099-12-12T12:12:12.000Z'
+      - id: 11111111-2222-3333-4444-555555555555
+        title: Employee NDA Document
+        content_type: application/pdf
+        size: 48230
+        page_count: 3
+        page_width: 612
+        page_height: 792
+        owner: api_demo_example
+        read_access:
+        - api_demo_example
+        write_access:
+        - api_demo_example
+        created_at: '2099-10-01T09:00:00.000Z'
+        updated_at: '2099-10-02T11:45:00.000Z'
+    FileURL:
+      summary: Publicly accessible file URL
+      value:
+        title: Example contract PDF
+        file_url: https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-sign-v3-openapi.yml
+- skribble-sign-v2-openapi.yml
+- skribble-sign-v3-openapi.yml

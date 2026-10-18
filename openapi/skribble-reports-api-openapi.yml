@@ -1,0 +1,328 @@
+openapi: 3.2.0
+info:
+  title: Skribble Reports API
+  version: 1.2.4
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  description: 'Operations tagged Reports across 2 of this provider''s published API definitions: skribble-validation-v1-openapi.yml, skribble-validation-v1-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://document-validation.skribble.com/v1
+  description: Production - Switzerland
+- url: https://document-validation.skribble.de/v1
+  description: Production - Germany
+security: []
+tags:
+- name: Reports
+  description: Endpoints for generating, retrieving, and managing reports related to document processing.
+paths:
+  /reports/{id}/skribble:
+    get:
+      operationId: getSkribbleReport
+      tags:
+      - Reports
+      summary: Skribble validation report
+      description: Get the digitally signed Skribble validation report as PDF. The report is generated once per validation ID, language, ETSI attachment flag and timezone, then cached — subsequent requests with the same parameters are served from cache and not billed. Optionally attach the ETSI TS 119 102-2 XML validation report as an embedded file in the PDF.
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/validateid'
+      - $ref: '#/components/parameters/reportlang'
+      - $ref: '#/components/parameters/reportattachetsi'
+      - $ref: '#/components/parameters/reporttimezone'
+      responses:
+        '200':
+          description: Signed validation report PDF
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: attachment; filename="validation-report.pdf"
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '502':
+          description: Upstream seal service error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemResponse'
+              example:
+                type: https://document-validation.skribble.com/problem/problem-with-message
+                method: GET
+                path: /v1/reports/00000000-0000-0000-0000-000000000000/skribble
+                status: 502
+                message: Upstream seal service error
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://document-validation.skribble.com/v1
+      description: Production - Switzerland
+    - url: https://document-validation.skribble.de/v1
+      description: Production - Germany
+  /reports/{id}/etsi:
+    get:
+      operationId: getReportsETSI
+      tags:
+      - Reports
+      summary: ETSI TS 119 102-2 validation report
+      description: Get the ETSI TS 119 102-2 signature validation report as a XML
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/validateid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/xml:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://document-validation.skribble.com/v1
+      description: Production - Switzerland
+    - url: https://document-validation.skribble.de/v1
+      description: Production - Germany
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/feature-not-enabled
+            method: POST
+            path: /v1/validate/document
+            status: 403
+            message: Validation API access is not enabled for this business
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 429
+            message: Too many requests
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v1/validate/document
+            status: 401
+            message: Authentication required
+    NotAcceptable:
+      description: Not acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v1/reports/00000000-0000-0000-0000-000000000000/skribble
+            status: 406
+            message: No acceptable representation
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 500
+            message: Internal server error
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 503
+            message: Service unavailable
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 400
+            message: Document could not be parsed
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/entity-not-found
+            method: GET
+            path: /v1/infos/00000000-0000-0000-0000-000000000000/validation
+            status: 404
+            message: Resource not found
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and reserved
+
+        for future use.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g.
+
+            `document-validation.skribble.com` and `document-validation.skribble.de`
+
+            for the production regions; other environments use their respective
+
+            hosts). Match on the path segment after `/problem/` rather than the full
+
+            URI. Known values:
+
+
+            - `https://document-validation.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://document-validation.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://document-validation.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://document-validation.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://document-validation.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://document-validation.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v1/validate/document
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: Optional machine-readable error key. Reserved for future use.
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Document could not be parsed
+  parameters:
+    reportlang:
+      name: lang
+      in: query
+      description: Language of the validation report
+      required: false
+      schema:
+        type: string
+        enum:
+        - en
+        - de
+        - fr
+        default: en
+    reporttimezone:
+      name: timeZone
+      in: query
+      description: IANA timezone name used to render timestamps in the report — the "Generated at" time and each signer's "Time of signature". Defaults to UTC, preserving the previous behaviour when omitted. The rendered zone abbreviation (e.g. `UTC`, `CET`, `PST`) reflects the chosen zone. Browser callers can pass `Intl.DateTimeFormat().resolvedOptions().timeZone`. The timezone is part of the report cache key, so each distinct timezone (per language and ETSI flag) is rendered, billed and cached once. An unknown or malformed value returns `400`.
+      required: false
+      schema:
+        type: string
+        default: UTC
+        example: Europe/Zurich
+    reportattachetsi:
+      name: attachETSIReport
+      in: query
+      description: Attach the ETSI TS 119 102-2 XML validation report as a file attachment to the PDF. When enabled, the XML report is embedded in the PDF and a paperclip annotation is added on the last page. This registers additional usage for the ETSI report endpoint.
+      required: false
+      schema:
+        type: boolean
+        default: false
+    validateid:
+      name: id
+      in: path
+      required: true
+      description: The 'id' provided by the validate operation
+      schema:
+        type: string
+        format: uuid
+        default: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-validation-v1-openapi.yml
+- skribble-validation-v1-openapi.yml

@@ -1,0 +1,576 @@
+openapi: 3.2.0
+info:
+  title: Skribble Send To API
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  version: '1.0'
+  description: 'Operations tagged SendTo across 3 of this provider''s published API definitions: skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.skribble.com/v3
+  description: Production - Switzerland
+- url: https://api.skribble.de/v3
+  description: Production - Germany
+- url: https://api.skribble.com/v2
+  description: Production - Switzerland
+- url: https://api.skribble.de/v2
+  description: Production - Germany
+security: []
+tags:
+- name: SendTo
+  description: Endpoints for the Send-To signing flow.
+paths:
+  /sendto:
+    post:
+      tags:
+      - SendTo
+      summary: Create a Send-To Request
+      description: 'Starts the signing process by uploading the PDF document `content` and
+
+        assigning it a `title`.
+
+
+        ### Limited lifetime
+
+
+        > Send-To objects and their related Documents and SignatureRequests are only
+
+        > guaranteed for a **limited lifetime**.
+
+        >
+
+        > - A Send-To request that is not claimed by a user — i.e. where a user
+
+        > does not add the document to their list of documents to sign — is
+
+        > deleted automatically after one day.
+
+        >
+
+        > - All Send-To objects and their related Documents and SignatureRequest
+
+        > objects, regardless of status, are deleted automatically after 90 days.'
+      operationId: createSendTo
+      security:
+      - {}
+      requestBody:
+        description: Content can be sent directly as a file or base64-encoded in a JSON object
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - title
+              - content
+              properties:
+                title:
+                  type: string
+                  description: Title of the document.
+                  example: Document 1
+                content:
+                  type: string
+                  format: binary
+                  description: PDF file to upload.
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSendToRequest'
+            examples:
+              Base64Document:
+                summary: Base64-encoded PDF
+                value:
+                  title: Document 1
+                  content: SGVsbG8gd29ybGQh
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSendToResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /sendto/{SEND_TO_ID}/track:
+    get:
+      tags:
+      - SendTo
+      summary: Track a Send-To Request
+      description: 'To call the `track` endpoint, you must include the value of the
+
+        `access_code` field—received when creating the `Send-To` object—in the
+
+        request header `X-Accesscode`.'
+      operationId: trackSendTo
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/XAccesscodeHeader'
+      - $ref: '#/components/parameters/SendToIdPath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackSendToResponse'
+              examples:
+                unclaimed:
+                  $ref: '#/components/examples/SendToUnclaimed'
+                claimed:
+                  $ref: '#/components/examples/SendToClaimed'
+                signed:
+                  $ref: '#/components/examples/SendToSigned'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /sendto/{SEND_TO_ID}/download:
+    get:
+      tags:
+      - SendTo
+      summary: Download Send-To Document
+      description: 'To call the `download` endpoint, you must include the value of the
+
+        `access_code` field—received when creating the `Send-To` object—in the
+
+        request header `X-Accesscode`.
+
+
+        The response contains the originally provided PDF document in its current
+
+        state, which may be signed, declined, withdrawn, or still open for signing.
+
+        The current status can be retrieved using the `track` endpoint.'
+      operationId: downloadSendTo
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/XAccesscodeHeader'
+      - $ref: '#/components/parameters/SendToIdPath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: string
+                    format: byte
+                    description: Base64-encoded document content.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /sendto/{SEND_TO_ID}:
+    delete:
+      tags:
+      - SendTo
+      summary: Delete a Send-To Request
+      description: 'To call the `delete` endpoint, you must include the value of the
+
+        `access_code` field—received when creating the `Send-To` object—in the
+
+        request header `X-Accesscode`.
+
+
+        This call deletes the involved `Send-To`, `Document`, and `SignatureRequest`
+
+        objects regardless of the current `Send-To` state.'
+      operationId: deleteSendTo
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/XAccesscodeHeader'
+      - $ref: '#/components/parameters/SendToIdPath'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+components:
+  examples:
+    SendToClaimed:
+      summary: Send-To claimed by a user
+      value:
+        status: CLAIMED
+        creator: user@example.com
+        signers: null
+    SendToSigned:
+      summary: Send-To fully signed
+      value:
+        status: SIGNED
+        creator: user@example.com
+        signers:
+        - signer1@example.com
+        - signer2@example.com
+    SendToUnclaimed:
+      summary: Send-To not yet claimed
+      value:
+        status: UNCLAIMED
+        creator: null
+        signers: null
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and only present
+
+        for errors that carry a machine-readable code.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g. `api.skribble.com`
+
+            and `api.skribble.de` for the production regions; other environments
+
+            use their respective hosts). Match on the path segment after `/problem/`
+
+            rather than the full URI. Known values:
+
+
+            - `https://api.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://api.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://api.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://api.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://api.skribble.com/problem/parameterized` — parameterized error with details
+
+            - `https://api.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://api.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v2/signature-requests
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: 'Optional machine-readable error key. Present for a subset of errors that carry
+
+            a stable code. Prefer matching on this field over parsing `message`, which is
+
+            not part of the stable contract.
+
+
+            Known keys, grouped by category:
+
+
+            Authentication (`403`):
+
+
+            - `error.auth.token_expired`: the access token has expired
+
+            - `error.auth.token_invalid`: the access token is malformed or otherwise invalid
+
+            - `error.auth.credentials_invalid`: the supplied credentials were rejected
+
+
+            Rate limiting (`429`):
+
+
+            - `error.rate_limit.exceeded`: a generic rate limit was exceeded
+
+            - `error.rate_limit.reminder`: the per-signature-request reminder limit was exceeded
+
+
+            File upload / attachment (`400`):
+
+
+            - `file.attachment.unsupported`: the uploaded attachment type is not supported
+
+            - `file.malware.detected`: malware was detected in the uploaded file
+
+
+            PDF processing (`400`):
+
+
+            - `file.pdf.general_error`: the PDF could not be loaded (corrupt or unreadable)
+
+            - `file.pdf.encryption.unknown_password`: the PDF is encrypted with an unknown password
+
+            - `file.pdf.encryption.no_changes_allowed`: the PDF''s signature permissions (DocMDP) do not allow the required changes
+
+            - `file.pdf.encryption.unknown_permissions`: the PDF is encrypted with an unknown permissions type
+
+            - `file.pdf.signature_verification.failed`: verification of an existing PDF signature failed
+
+
+            Signature request (`400`):
+
+
+            - `error.sr.last_document_cannot_be_removed`: the request would remove the only remaining document from the signature request; an SR must keep at least one document'
+          example: file.attachment.unsupported
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Validation failed for JSON object
+    TrackSendToResponse:
+      title: TrackSendToResponse
+      type: object
+      required:
+      - status
+      - signers
+      - creator
+      properties:
+        status:
+          type: string
+          description: Status of the Send-To request
+          enum:
+          - UNCLAIMED
+          - EXPIRED
+          - CLAIMED
+          - SIGNING
+          - SIGNED
+          - WITHDRAWN
+          - DECLINED
+        creator:
+          description: User who claimed the Send-To request
+          oneOf:
+          - type: string
+          - type: 'null'
+        signers:
+          description: List of signers for the Send-To request
+          oneOf:
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+    CreateSendToRequest:
+      title: Create Send-To Request
+      required:
+      - title
+      - content
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the document.
+          example: Document 1
+        content:
+          type: string
+          description: Base64 Encoded Document.
+          format: byte
+          example: SGVsbG8gd29ybGQh
+    CreateSendToResponse:
+      title: Create Send-To Response
+      type: object
+      required:
+      - url
+      - id
+      - access_code
+      properties:
+        url:
+          type: string
+          description: URL to claim document to get signed.
+          format: uri
+          example: https://my.skribble.com/sendto/8229873d-d7c7-4e2b-a8a3-3313532
+        id:
+          type: string
+          description: Generated send-to document ID
+          format: uuid
+          example: 8229873d-d7c7-4e2b-a8a3-000003313532
+        access_code:
+          type: string
+          description: Access code to be used in for endpoints.
+          format: uuid
+          example: b498e9d2-93f4-4380-b998-c44f467ae020
+  responses:
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 429
+            message: Too many requests
+    NotAcceptable:
+      description: Not acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 406
+            message: Content type not supported
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests
+            status: 401
+            message: Unauthorized
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 500
+            message: Internal server error
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 503
+            message: Service unavailable
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 400
+            message: Validation failed for JSON object
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/entity-not-found
+            method: GET
+            path: /v2/signature-requests/00000000-0000-0000-0000-000000000000
+            status: 404
+            message: SignatureRequest not found
+  parameters:
+    SendToIdPath:
+      name: SEND_TO_ID
+      in: path
+      description: Unique ID received when creating the Send-To object
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: d98ae06a-3ae4-5cc5-c0a3-62b05901b84f
+    XAccesscodeHeader:
+      name: X-Accesscode
+      in: header
+      description: Access code received when creating the Send-To object
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-sign-v3-openapi.yml
+- skribble-sign-v2-openapi.yml
+- skribble-sign-v3-openapi.yml

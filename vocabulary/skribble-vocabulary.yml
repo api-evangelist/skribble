@@ -1,0 +1,448 @@
+generated: '2026-10-18'
+method: derived
+generator: derive-vocabulary.py
+source:
+- openapi/skribble-sign-v2-openapi.yml
+- openapi/skribble-sign-v3-openapi.yml
+- openapi/skribble-validation-v1-openapi.yml
+vocabulary:
+  name: Skribble Domain Vocabulary
+  description: 'Terms declared by Skribble''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-18'
+  terms:
+  - term: Access
+    definition: Endpoints for authentication, authorization, and user access management.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Document
+    definition: Endpoints for uploading and managing documents.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Signature
+    definition: Endpoints for creating and managing signature requests.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Signature Signer
+    definition: Endpoints for managing signers on a signature request.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Signature Attachment
+    definition: Endpoints for managing attachments on a signature request.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Signature Handling
+    definition: Endpoints for handling signature requests and callbacks.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Seal
+    definition: Endpoints for applying electronic seals to documents.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: SendTo
+    definition: Endpoints for the Send-To signing flow.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: User
+    definition: Endpoints for user information and signature quality queries.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Identification
+    definition: Endpoints for retrieving, checking status, and downloading identification evidence collected during identification.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Report
+    definition: Endpoints for signature activity reporting.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Monitoring
+    definition: Endpoints for monitoring system health.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v2-openapi.yml
+  - term: Signature Observer
+    definition: Endpoints for managing observers on a signature request.
+    tags:
+    - Resource Group
+    source: openapi/skribble-sign-v3-openapi.yml
+  - term: Validation
+    definition: Endpoints to validate documents, data formats, and signatures.
+    tags:
+    - Resource Group
+    source: openapi/skribble-validation-v1-openapi.yml
+  - term: Additional Information
+    definition: Endpoints providing extra metadata or supplementary details for documents.
+    tags:
+    - Resource Group
+    source: openapi/skribble-validation-v1-openapi.yml
+  - term: Reports
+    definition: Endpoints for generating, retrieving, and managing reports related to document processing.
+    tags:
+    - Resource Group
+    source: openapi/skribble-validation-v1-openapi.yml
+  - term: Billing and Credits
+    definition: Endpoints for managing account credits, billing information, and payment operations.
+    tags:
+    - Resource Group
+    source: openapi/skribble-validation-v1-openapi.yml
+  - term: LoginRequest
+    definition: 'Object declared by the contract with fields: username, api-key.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/LoginRequest
+  - term: Problem
+    definition: Error response envelope returned for all 4xx and 5xx responses with a JSON body. Follows a Problem+JSON-style shape. The `key`
+      field is optional and only present for errors that carry a machine-readable code.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/ProblemResponse
+  - term: Signature Status Code
+    definition: 'The state of a signature. Possible values: - **OPEN** Waiting for the user to sign a signature. - **WAITING** The signer is waiting
+      for a preceding signer in the sequence to complete. - **DECLINED** The user declined to sign. - **WITHDRAWN** The owner has withdrawn the
+      signature request. - **SIGNED** The user signed the document. - **ERROR** A technical error occurred.'
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureStatusCode
+  - term: Signature Status Overall
+    definition: 'Overall signing status of the document. Possible values: - **OPEN** At least one user has not signed or declined their signature
+      yet. - **DECLINED** At least one user declined to sign. The signature request failed. - **WITHDRAWN** The owner has withdrawn the signature
+      request. - **SIGNED** All users signed the document. The signature request was successfully completed. - **EXPIRED** The owner-set '
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureStatusOverall
+  - term: Signature Legislation
+    definition: Legislation under which the signatures are created. Required when `quality` is `QES` or `AES_MINIMAL`. | Legislation | Description
+      | | --- | --- | | **ZERTES** | QES according to Swiss law. This is the **default**. | | **EIDAS** | QES according to EU law. |
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureLegislation
+  - term: Signature Quality
+    definition: Minimal quality of the signatures for this signature request. | Quality | Description | | --- | --- | | **QES** | Every signer
+      must use QES. This is the **default** quality. Requires a `legislation` parameter. | | **AES_MINIMAL** | Signers will use QES if available,
+      otherwise AES. At least AES is guaranteed. Requires a `legislation` parameter. | | **AES** | Every signer uses AES. | | **SES** | Eve
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureQuality
+  - term: Signature Language
+    definition: Determines in which language e-mails are sent to the user, if the user has not set their language preference yet.
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureLanguage
+  - term: Signer Identity Data in Response
+    definition: Signer identity information returned as part of the SignatureRequest response.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignerIdentityDataResponse
+  - term: Visual Signature Image
+    definition: Visual signature image.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/VisualSignatureImage
+  - term: Visual Signature Position
+    definition: 'Object declared by the contract with fields: page, height, width, x, y, rotation.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/VisualSignaturePosition
+  - term: Visual Signature Response
+    definition: Visual signature placement information.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/VisualSignatureResponse
+  - term: Signature Callbacks Response
+    definition: 'Object declared by the contract with fields: sid, status_code, account_email, signer_identity_data, sequence, notify, signing_url,
+      decline_message, signed_at, signed_legislation, signed_quality, last_viewed_at. (2 more)'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureRecipientResponse
+  - term: Signature Attachment
+    definition: 'Object declared by the contract with fields: attachment_id, filename.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureAttachment
+  - term: Attachment when signed
+    definition: 'When a SignatureRequest has been signed by all signers, all signers and all observers are notified by email. Skribble provides
+      the option to attach two types of attachments automatically to this email: - the signed document and - the signature protocol. This can
+      be configured via the business settings, which can be used to define that these documents should generally be attached for all SignatureR'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/AttachOnSuccess
+  - term: SignatureResponse
+    definition: 'Object declared by the contract with fields: id, title, message, document_id, legislation, quality, signing_url, status_overall,
+      business, signatures, cc_email_addresses, auto_delete_at. (15 more)'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureResponse
+  - term: Signer Identity Data
+    definition: Optional (no-account) signer identity information.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignerIdentityData
+  - term: VisualSignature
+    definition: Visual signature placement information.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/VisualSignature
+  - term: Signature Recipient
+    definition: 'Object declared by the contract with fields: account_email, sequence, notify, language, signer_identity_data, visual_signature.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureRecipient
+  - term: Update Signature Request
+    definition: 'Object declared by the contract with fields: id, title, message, legislation, quality, signatures, cc_email_addresses, callback_success_url,
+      callback_error_url, callback_update_url, callback_start_sign_url, callback_ident_pending_url. (3 more)'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/UpdateSignatureRequest
+  - term: Signature Request Properties
+    definition: 'Object declared by the contract with fields: title, message, legislation, quality, signatures, cc_email_addresses, callback_success_url,
+      callback_error_url, callback_update_url, callback_start_sign_url, callback_ident_pending_url, callback_ident_error_url. (5 more)'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/CreateSignatureRequestBase
+  - term: PayloadTooLarge
+    definition: Plain-text or HTML body returned by the gateway in front of the API when a request is rejected for exceeding the maximum allowed
+      size, before it reaches the API. Pending a fix to align this with the standard Problem+JSON envelope used elsewhere in this API.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/PayloadTooLarge
+  - term: Withdraw Signature Request
+    definition: 'Object declared by the contract with fields: message.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/WithdrawSignatureRequest
+  - term: Signature Report
+    definition: 'Object declared by the contract with fields: header, userList, error.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureReport
+  - term: Callback Type
+    definition: 'The type of this callback. Possible values: - **SUCCESS** Is triggered when the document has been successfully signed by all
+      parties involved. - **UPDATE** Is triggered on changes on the `SignatureRequest` object like when one person of all involved parties has
+      signed. - **ERROR** Is triggered when a person declines the signature or when the `SignatureRequest` is withdrawn. - **START_SIGN** Is tri'
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/CallbackType
+  - term: Callback State
+    definition: 'The state of the callback. Possible values: - **OPEN** The callback request will be executed in the next execution cycle. - **COMPLETED**
+      The callback request was executed successfully. The API received an HTTP 2xx success code in response. - **RESIGNATED** The callback request
+      has been attempted `attempts` times but was unsuccessful. The API did not receive a valid HTTP 2xx response.'
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/CallbackState
+  - term: Create Signature Attachment Request
+    definition: 'Object declared by the contract with fields: filename, content_type, content.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/CreateSignatureAttachmentRequest
+  - term: Identification Evidence Status Response
+    definition: 'Object declared by the contract with fields: id, transactionCode, accountId, workflowId, status, pendingReview, createdAt, expiresAt,
+      startedAt, completedAt, reviewedAt.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/IdentificationEvidenceStatusResponse
+  - term: Create Seal Request
+    definition: 'Object declared by the contract with fields: content, account_name, title, visual_signature.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/CreateSealRequest
+  - term: Create Seal Response
+    definition: 'Object declared by the contract with fields: document_id.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/CreateSealResponse
+  - term: Formfield Position
+    definition: 'Object declared by the contract with fields: page, height, width, x, y, rotation.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureFormFieldPosition
+  - term: Signature Formfield
+    definition: 'Object declared by the contract with fields: name, signed, positions.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SignatureFormField
+  - term: Document Response
+    definition: Document object Response.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/DocumentResponse
+  - term: Document Content Response
+    definition: Document Content Response as JSON
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/DocumentContentResponse
+  - term: Create Send-To Request
+    definition: 'Object declared by the contract with fields: title, content.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/CreateSendToRequest
+  - term: Create Send-To Response
+    definition: 'Object declared by the contract with fields: url, id, access_code.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/CreateSendToResponse
+  - term: TrackSendToResponse
+    definition: 'Object declared by the contract with fields: status, creator, signers.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/TrackSendToResponse
+  - term: User Signature Qualities Response
+    definition: 'Object declared by the contract with fields: qes, aes_minimal, aes, ses.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/UserSignatureQualitiesResponse
+  - term: Activities Signatures User
+    definition: 'Object declared by the contract with fields: email, first_name, last_name, type, mobile.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/ActivitiesSignaturesUser
+  - term: Activities Signatures by Business Entry
+    definition: 'Object declared by the contract with fields: _id, action, timestamp, signature_request_id, cost_center, initiator, signer, quality,
+      legislation.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/ActivitiesSignaturesEntry
+  - term: Activities Signatures by Business Response
+    definition: Paginated list of signature activities for the business.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/ActivitiesSignaturesResponse
+  - term: System Health Response
+    definition: System Health.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v2-openapi.yml#/components/schemas/SystemHealthResponse
+  - term: Signature Status Code
+    definition: 'The state of a signature. Possible values: - **DRAFT** The signature request has not yet been placed. - **OPEN** Waiting for
+      the user to sign a signature. - **WAITING** The signer is waiting for a preceding signer in the sequence to complete. - **DECLINED** The
+      user declined to sign. - **WITHDRAWN** The owner has withdrawn the signature request. - **SIGNED** The user signed the document. - **ERROR'
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/SignatureStatusCode_v3
+  - term: Signature Status Overall
+    definition: 'Overall signing status of the document. Possible values: - **DRAFT** The signature request has not yet been placed. - **OPEN**
+      At least one user has not signed or declined their signature yet. - **DECLINED** At least one user declined to sign. The signature request
+      failed. - **WITHDRAWN** The owner has withdrawn the signature request. - **SIGNED** All users signed the document. The signature reque'
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/SignatureStatusOverall_v3
+  - term: Signature Document Response
+    definition: 'Object declared by the contract with fields: id, name, version_id.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/DocumentInSignatureResponse
+  - term: VisualSignature_v3
+    definition: Visual signature placement information.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/VisualSignature_v3
+  - term: Signer Document to Sign
+    definition: 'Object declared by the contract with fields: document_id, visual_signature.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/SignatureDocument
+  - term: Signature Callbacks Response
+    definition: 'Object declared by the contract with fields: sid, account_email, document_signatures, signer_identity_data, sequence, status_code,
+      notify, signing_url, decline_message, signed_at, signed_legislation, signed_quality. (3 more)'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/SignatureRecipientResponse_v3
+  - term: User Observer Response
+    definition: 'Object declared by the contract with fields: id, type, invited_at, invited_by, user_info.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/UserObserverResponse
+  - term: Group Observer Response
+    definition: 'Object declared by the contract with fields: id, type, invited_at, invited_by, group_info.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/GroupObserverResponse
+  - term: SignatureObserverResponse
+    definition: Response object representing an observer that has been added to a signature request. Depending on the type, either user_info or
+      group_info is present.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/SignatureObserverResponse
+  - term: SignatureResponse_v3
+    definition: 'Object declared by the contract with fields: id, title, message, documents, legislation, quality, signing_url, status_overall,
+      business_id, signatures, origin, observers. (17 more)'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/SignatureResponse_v3
+  - term: Signature Document
+    definition: 'Object declared by the contract with fields: id.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/DocumentInSignature
+  - term: Create Signature Request
+    definition: 'Object declared by the contract with fields: title, message, legislation, quality, documents, signatures, callback_success_url,
+      callback_error_url, callback_update_url, callback_start_sign_url, callback_ident_pending_url, callback_ident_error_url. (5 more)'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/CreateSignatureRequest
+  - term: Callback Type
+    definition: 'The type of this callback. Possible values: - **SUCCESS** Is triggered when the document has been successfully signed by all
+      parties involved. - **UPDATE** Is triggered on changes on the `SignatureRequest` object like when one person of all involved parties has
+      signed. - **INITIATE** Is triggered when the signature request is initiated via the endpoint. - **ERROR** Is triggered when a person decli'
+    tags:
+    - Enumeration
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/CallbackType_v3
+  - term: Signature Document Upload
+    definition: 'Object declared by the contract with fields: content.'
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/UploadDocumentInSignature
+  - term: Signature Observer
+    definition: Defines an observer target which can either be a USER or a GROUP. - For type USER, either email or user_id must be provided (but
+      not both). When using email, a user will be automatically created if not present and returned. - For type GROUP, group_id must be provided
+      and no user fields are allowed.
+    tags:
+    - Object
+    source: openapi/skribble-sign-v3-openapi.yml#/components/schemas/CreateSignatureObserverRequest
+  - term: SignerCertificate
+    definition: 'Object declared by the contract with fields: subject, issuer, serialNumber.'
+    tags:
+    - Object
+    source: openapi/skribble-validation-v1-openapi.yml#/components/schemas/SignerCertificate
+  - term: OptionalSignerInfos
+    definition: 'Object declared by the contract with fields: name, contact, location, reason.'
+    tags:
+    - Object
+    source: openapi/skribble-validation-v1-openapi.yml#/components/schemas/OptionalSignerInfos
+  - term: Signer
+    definition: 'Object declared by the contract with fields: valid, signer, time, quality, legislation, longTermValidation, visualDifferences,
+      undefinedChanges, certificate, optionalInfos.'
+    tags:
+    - Object
+    source: openapi/skribble-validation-v1-openapi.yml#/components/schemas/Signer
+  - term: FormatInfosResponse
+    definition: 'Object declared by the contract with fields: fileType, quality, producer.'
+    tags:
+    - Object
+    source: openapi/skribble-validation-v1-openapi.yml#/components/schemas/FormatInfosResponse
+  - term: ValidationInfosResponse
+    definition: 'Object declared by the contract with fields: indication, subIndication, details.'
+    tags:
+    - Object
+    source: openapi/skribble-validation-v1-openapi.yml#/components/schemas/ValidationInfosResponse
+  - term: OptionalValidationInfos
+    definition: 'Object declared by the contract with fields: signer, format, validation.'
+    tags:
+    - Object
+    source: openapi/skribble-validation-v1-openapi.yml#/components/schemas/OptionalValidationInfos
+  - term: DocumentValidationResponse
+    definition: 'Object declared by the contract with fields: id, valid, signatures, validSignatures, quality, legislation, longTermValidation,
+      visualDifferences, undefinedChanges, additionalInfos.'
+    tags:
+    - Object
+    source: openapi/skribble-validation-v1-openapi.yml#/components/schemas/DocumentValidationResponse

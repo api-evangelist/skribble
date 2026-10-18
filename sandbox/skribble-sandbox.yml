@@ -1,0 +1,16 @@
+generated: '2026-10-18'
+method: searched
+source: https://api.docs.skribble.com/authentication
+description: "Skribble provides demo API keys for testing and development"
+docs: https://api.docs.skribble.com/authentication
+sandbox_features:
+- demo_api_keys: true
+  prefix: api_demo
+  purpose: "Testing and development"
+  cost: "Free"
+  limitation: "Demo API keys create signatures that have no legal weight"
+- production_api_keys: true
+  prefix: api_production or api_prod
+  purpose: "Live transactions"
+  cost: "Billable"
+note: "Switch to production keys when going live. All transactions made with production keys are billable."

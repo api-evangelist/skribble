@@ -1,0 +1,610 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/skribble/main/json-schema/skribble-signature-response-v3-schema.json",
+  "title": "SignatureResponse_v3",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/skribble-sign-v3-openapi.yml#/components/schemas/SignatureResponse_v3",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DocumentInSignatureResponse"
+      }
+    },
+    "legislation": {
+      "$ref": "#/$defs/SignatureLegislation"
+    },
+    "quality": {
+      "$ref": "#/$defs/SignatureQuality"
+    },
+    "signing_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The URL for the SignatureRequest owner to view and manage the request in the Skribble web application. This URL is not intended for signers — each signer has their own dedicated signing_url within the signatures array."
+    },
+    "status_overall": {
+      "$ref": "#/$defs/SignatureStatusOverall_v3"
+    },
+    "business_id": {
+      "type": "string"
+    },
+    "signatures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SignatureRecipientResponse_v3"
+      }
+    },
+    "origin": {
+      "type": "string"
+    },
+    "observers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SignatureObserverResponse"
+      }
+    },
+    "auto_delete_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Server-managed date on which this signature request and its related documents are automatically\ndeleted in line with the owning business's retention policy. Not directly settable by API clients.\nMay be absent or `null` when no retention policy applies."
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Owner-set expiry date for this signature request. When this date passes, the request\ntransitions to `status_overall=EXPIRED`. Set via `expires_at` on create/update;\nclear via `DELETE /signature-requests/{SR_ID}/expires-at`.\nAbsent or `null` when no owner-set expiry has been configured."
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SignatureAttachment"
+      }
+    },
+    "attach_on_success": {
+      "$ref": "#/$defs/AttachOnSuccess"
+    },
+    "custom": {
+      "type": "string",
+      "description": "Custom field for storing application-specific data related to this signature request."
+    },
+    "owner": {
+      "type": "string"
+    },
+    "read_access": {
+      "type": "array",
+      "description": "Users or API keys with read access to this signature request.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "write_access": {
+      "type": "array",
+      "description": "Users or API keys with write access to this signature request.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "initiated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "callback_success_url": {
+      "type": "string",
+      "description": "Callback URL called on overall success. See the request schema for supported placeholders and retry behaviour.",
+      "format": "uri"
+    },
+    "callback_error_url": {
+      "type": "string",
+      "description": "Callback URL called when a signer declines or the request is withdrawn. See the request schema for supported placeholders and retry behaviour.",
+      "format": "uri"
+    },
+    "callback_update_url": {
+      "type": "string",
+      "description": "Callback URL called on any update (e.g. one signer signed). See the request schema for supported placeholders and retry behaviour.",
+      "format": "uri"
+    },
+    "callback_start_sign_url": {
+      "type": "string",
+      "description": "Callback URL called when a signer starts the signature process (only for Express QES). See the request schema for supported placeholders and retry behaviour.",
+      "format": "uri"
+    },
+    "callback_ident_pending_url": {
+      "type": "string",
+      "description": "Callback URL called when the identification of a signer requires manual review. See the request schema for supported placeholders and retry behaviour.",
+      "format": "uri"
+    },
+    "callback_ident_error_url": {
+      "type": "string",
+      "description": "Callback URL called when the identification of a signer ends in an error. See the request schema for supported placeholders and retry behaviour.",
+      "format": "uri"
+    }
+  },
+  "$defs": {
+    "AttachOnSuccess": {
+      "title": "Attachment when signed",
+      "type": "array",
+      "description": "When a SignatureRequest has been signed by all signers, all signers and all observers are notified by email.\nSkribble provides the option to attach two types of attachments automatically to this email:\n  - the signed document and\n  - the signature protocol.\n\nThis can be configured via the business settings, which can be used to define that these documents should generally\nbe attached for all SignatureRequests created by business members.\n\nAlternatively it is possible to define the attachments on demand per SignatureRequest by using this field.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "SIGNED_DOCUMENT",
+          "SIGNATURE_PROTOCOL"
+        ]
+      }
+    },
+    "DocumentInSignatureResponse": {
+      "title": "Signature Document Response",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique Document ID.",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "description": "Document Name."
+        },
+        "version_id": {
+          "type": "string",
+          "description": "Document Version ID.",
+          "format": "uuid"
+        }
+      }
+    },
+    "GroupObserverResponse": {
+      "title": "Group Observer Response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "invited_at",
+        "invited_by",
+        "group_info"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique observer identifier."
+        },
+        "type": {
+          "type": "string",
+          "description": "Observer type.",
+          "const": "GROUP"
+        },
+        "invited_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the observer was invited."
+        },
+        "invited_by": {
+          "type": "string",
+          "description": "Identifier of the user or API key that invited the observer."
+        },
+        "group_info": {
+          "type": "object",
+          "description": "Information about the group observer.",
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Group ID."
+            },
+            "name": {
+              "type": "string",
+              "description": "Group name."
+            },
+            "version_id": {
+              "type": "string",
+              "description": "Group version identifier."
+            }
+          }
+        }
+      }
+    },
+    "SignatureAttachment": {
+      "title": "Signature Attachment",
+      "type": "object",
+      "properties": {
+        "attachment_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "filename": {
+          "type": "string"
+        }
+      }
+    },
+    "SignatureDocument": {
+      "title": "Signer Document to Sign",
+      "type": "object",
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "description": "Unique Document ID.",
+          "format": "uuid"
+        },
+        "visual_signature": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/VisualSignature_v3"
+            }
+          ]
+        }
+      }
+    },
+    "SignatureLanguage": {
+      "title": "Signature Language",
+      "type": "string",
+      "description": "Determines in which language e-mails are sent to the user, if the user has not set their language preference yet.",
+      "enum": [
+        "en",
+        "de",
+        "fr",
+        "it"
+      ],
+      "default": "en"
+    },
+    "SignatureLegislation": {
+      "title": "Signature Legislation",
+      "type": "string",
+      "description": "Legislation under which the signatures are created. Required when `quality` is `QES` or `AES_MINIMAL`.\n\n| Legislation | Description |\n| --- | --- |\n| **ZERTES** | QES according to Swiss law. This is the **default**. |\n| **EIDAS** | QES according to EU law. |",
+      "enum": [
+        "ZERTES",
+        "EIDAS"
+      ]
+    },
+    "SignatureObserverResponse": {
+      "description": "Response object representing an observer that has been added to a signature request.\n\nDepending on the type, either user_info or group_info is present.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/UserObserverResponse"
+        },
+        {
+          "$ref": "#/$defs/GroupObserverResponse"
+        }
+      ]
+    },
+    "SignatureQuality": {
+      "title": "Signature Quality",
+      "type": "string",
+      "description": "Minimal quality of the signatures for this signature request.\n\n| Quality | Description |\n| --- | --- |\n| **QES** | Every signer must use QES. This is the **default** quality. Requires a `legislation` parameter. |\n| **AES_MINIMAL** | Signers will use QES if available, otherwise AES. At least AES is guaranteed. Requires a `legislation` parameter. |\n| **AES** | Every signer uses AES. |\n| **SES** | Every signer uses SES. |\n| **DEMO** | Every signer uses a DEMO signature with **no legal binding**. API demo users (`api_demo_example_*`) get this quality by default. |\n| **PART11** | Signers use a signature compliant with 21 CFR Part 11 regulations. |",
+      "enum": [
+        "SES",
+        "AES",
+        "AES_MINIMAL",
+        "QES",
+        "DEMO",
+        "PART11"
+      ]
+    },
+    "SignatureRecipientResponse_v3": {
+      "title": "Signature Callbacks Response",
+      "type": "object",
+      "properties": {
+        "sid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "account_email": {
+          "type": "string",
+          "format": "email"
+        },
+        "document_signatures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SignatureDocument"
+          }
+        },
+        "signer_identity_data": {
+          "$ref": "#/$defs/SignerIdentityDataResponse"
+        },
+        "sequence": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status_code": {
+          "$ref": "#/$defs/SignatureStatusCode_v3"
+        },
+        "notify": {
+          "type": "boolean",
+          "description": "Whether Skribble sends notification emails to this signer. When set to `false` together with\n`signer_identity_data.identity_reference`, the TAN-based email validation for No-Account-Signers (SES) is skipped."
+        },
+        "signing_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "A personalized signing URL for this specific signer, distinct from the top-level signing_url of the SignatureRequest.\nIt points to the Skribble web application and will directly open the document for signing\nprovided that the user is known to Skribble and is logged in.\nOtherwise, the user must login or register first to be able to see the document.\n\nWhen the user visits this URL, they will be forwarded to a special preview page of the PDF document and can start the signature process as usual.\n\nYou can add the following query parameters to this signing_url. Skribble will respect these parameters and redirect the user to the provided URLs once the signature process is finished.\n\nExample: `https://my.skribble.com/view/4f43614a-de50-bfe1-2df3-4c881fc7840e/cd16bd0802d146fd94ff736d7d7bf551?exitURL=https%3A%2F%2Fmy-app.com%2Fsigned&redirectTimeout=10`\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `exitURL` | string (URL-encoded) | Optional URL to redirect after the signature process finished. Example: `https%3A%2F%2Fgoogle.com` |\n| `errorURL` | string (URL-encoded) | Optional URL to redirect in case of an error. Defaults to `exitURL`. Ignored if `exitURL` is not set. Example: `https%3A%2F%2Fbing.com` |\n| `declineURL` | string (URL-encoded) | Optional URL to redirect when the user declines. Defaults to `exitURL`. Ignored if `exitURL` is not set. |\n| `hidedownload` | boolean | Optional flag to hide the download button on the success screen. Requires `exitURL` to be set. Example: `true` |\n| `redirectTimeout` | integer | Optional seconds before auto-redirect after signing. Min 0 (instant), max 90. Default: 45. Example: `20` |\n| `lang` | string | Optional language code to display the signing page in a specific language. Supported values: `en` (default), `de`, `fr`. Example: `lang=fr` |\n| `overlay` | boolean | Optional flag to show or hide the Skribble overlay on the signing page. |"
+        },
+        "decline_message": {
+          "type": "string",
+          "description": "The message provided by the signer when declining the signature request. Only present if the signer declined and provided a message."
+        },
+        "signed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this signer signed the document."
+        },
+        "signed_legislation": {
+          "$ref": "#/$defs/SignatureLegislation",
+          "description": "The legislation under which this signer's signature was created. Only present after signing."
+        },
+        "signed_quality": {
+          "$ref": "#/$defs/SignatureQuality",
+          "description": "The actual quality of this signer's signature. Only present after signing."
+        },
+        "last_viewed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this signer last viewed the document."
+        },
+        "language": {
+          "type": "string",
+          "description": "Language preference for this signer."
+        },
+        "invited_by": {
+          "type": "string"
+        }
+      }
+    },
+    "SignatureStatusCode_v3": {
+      "title": "Signature Status Code",
+      "type": "string",
+      "description": "The state of a signature.\n\nPossible values:\n  - **DRAFT** The signature request has not yet been placed.\n  - **OPEN** Waiting for the user to sign a signature.\n  - **WAITING** The signer is waiting for a preceding signer in the sequence to complete.\n  - **DECLINED** The user declined to sign.\n  - **WITHDRAWN** The owner has withdrawn the signature request.\n  - **SIGNED** The user signed the document.\n  - **ERROR** A technical error occurred.",
+      "enum": [
+        "DRAFT",
+        "OPEN",
+        "WAITING",
+        "DECLINED",
+        "WITHDRAWN",
+        "SIGNED",
+        "ERROR"
+      ]
+    },
+    "SignatureStatusOverall_v3": {
+      "title": "Signature Status Overall",
+      "type": "string",
+      "description": "Overall signing status of the document.\n\nPossible values:\n  - **DRAFT** The signature request has not yet been placed.\n  - **OPEN** At least one user has not signed or declined their signature yet.\n  - **DECLINED** At least one user declined to sign. The signature request failed.\n  - **WITHDRAWN** The owner has withdrawn the signature request.\n  - **SIGNED** All users signed the document. The signature request was successfully completed.\n  - **EXPIRED** The owner-set `expires_at` date has passed before all signers signed. Terminal status.\n  - **ERROR** A technical error occurred. The signature request cannot be completed.",
+      "enum": [
+        "DRAFT",
+        "OPEN",
+        "DECLINED",
+        "WITHDRAWN",
+        "SIGNED",
+        "EXPIRED",
+        "ERROR"
+      ]
+    },
+    "SignerIdentityDataResponse": {
+      "title": "Signer Identity Data in Response",
+      "type": "object",
+      "description": "Signer identity information returned as part of the SignatureRequest response.",
+      "properties": {
+        "email_address": {
+          "type": "string",
+          "description": "Email address of the no-account-signer.",
+          "format": "email"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "First name of the no-account-signer."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last name of the no-account-signer."
+        },
+        "mobile_number": {
+          "type": "string",
+          "description": "Mobile number of the no-account-signer in E.164 format without the leading `+`:\ncountry code + area code + number, no spaces or special characters."
+        },
+        "language": {
+          "$ref": "#/$defs/SignatureLanguage"
+        },
+        "identity_reference": {
+          "type": "string",
+          "description": "Customer-generated identifier for further identification of the signer."
+        },
+        "identification_require_evidence": {
+          "type": "boolean",
+          "description": "If set, a new identification process is started to get fresh evidence records, even if the signer is already identified."
+        },
+        "force_standard_qes": {
+          "type": "boolean",
+          "description": "If set to `true`, this signer is always identified via the standard QES flow and is never routed\nthrough Express QES, regardless of the business's Express QES setting or other identity flags such as\n`identification_require_evidence`."
+        },
+        "provider": {
+          "type": "string",
+          "description": "Evidence provider used to verify the signer's identity."
+        },
+        "evidence_id": {
+          "type": "string",
+          "description": "ID of the evidence records created during identification. Populated in the\n`SignatureRequest` response once the identification process has been completed."
+        }
+      }
+    },
+    "UserObserverResponse": {
+      "title": "User Observer Response",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "invited_at",
+        "invited_by",
+        "user_info"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique observer identifier."
+        },
+        "type": {
+          "type": "string",
+          "description": "Observer type.",
+          "const": "USER"
+        },
+        "invited_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the observer was invited."
+        },
+        "invited_by": {
+          "type": "string",
+          "description": "Identifier of the user or API key that invited the observer."
+        },
+        "user_info": {
+          "type": "object",
+          "description": "Information about the user observer.",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "User ID."
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "User email address."
+            }
+          }
+        }
+      }
+    },
+    "VisualSignatureImage": {
+      "title": "Visual Signature Image",
+      "type": "object",
+      "description": "Visual signature image.",
+      "required": [
+        "content",
+        "content_type"
+      ],
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Base64 encoded bytes of content.",
+          "format": "byte"
+        },
+        "content_type": {
+          "type": "string",
+          "description": "Content type of bytes sent in content. At the moment this MUST be image/png"
+        },
+        "content_size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Size of `content` in bytes. Calculated by the server.",
+          "readOnly": true
+        }
+      }
+    },
+    "VisualSignaturePosition": {
+      "title": "Visual Signature Position",
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "string",
+          "description": "Page number (0-indexed) where the signature appears.\nThis is a String and not a number!"
+        },
+        "height": {
+          "type": "number",
+          "description": "Height of the signature in pixels."
+        },
+        "width": {
+          "type": "number",
+          "description": "Width of the signature in pixels."
+        },
+        "x": {
+          "type": "number",
+          "description": "X-coordinate (pixels from left) of signature."
+        },
+        "y": {
+          "type": "number",
+          "description": "Y-coordinate (pixels from top) of signature."
+        },
+        "rotation": {
+          "type": "number",
+          "description": "Defines a rotation of the field content. \nIf used in context with a form field, then only the values 0, 90, 180, 270 are legal.\nOtherwise every value is legal. The rotation is applied counter clockwise."
+        }
+      }
+    },
+    "VisualSignature_v3": {
+      "description": "Visual signature placement information.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Multiple Positions",
+          "description": "Use multiple explicit positions.",
+          "required": [
+            "positions"
+          ],
+          "properties": {
+            "positions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/VisualSignaturePosition"
+              }
+            },
+            "image": {
+              "$ref": "#/$defs/VisualSignatureImage"
+            },
+            "position": {
+              "description": "Must not be provided when positions are used.",
+              "readOnly": true
+            },
+            "form_field": {
+              "description": "Must not be provided when positions are used.",
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "title": "Form Field",
+          "description": "Use a form field only.",
+          "required": [
+            "form_field"
+          ],
+          "properties": {
+            "form_field": {
+              "type": "string",
+              "description": "Name of the form field in which the signature is placed. If multiple fields of this name are present in the document, all will be used.\n"
+            },
+            "image": {
+              "$ref": "#/$defs/VisualSignatureImage"
+            },
+            "position": {
+              "description": "Must not be provided when form_field is used.",
+              "readOnly": true
+            },
+            "positions": {
+              "description": "Must not be provided when form_field is used.",
+              "readOnly": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,1006 @@
+openapi: 3.2.0
+info:
+  title: Skribble Signature Attachment API
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  version: '1.0'
+  description: 'Operations tagged Signature Attachment across 3 of this provider''s published API definitions: skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.skribble.com/v3
+  description: Production - Switzerland
+- url: https://api.skribble.de/v3
+  description: Production - Germany
+- url: https://api.skribble.com/v2
+  description: Production - Switzerland
+- url: https://api.skribble.de/v2
+  description: Production - Germany
+security: []
+tags:
+- name: Signature Attachment
+  description: Endpoints for managing attachments on a signature request.
+paths:
+  /signature-requests/{SR_ID}/attachments:
+    post:
+      tags:
+      - Signature Attachment
+      summary: Add an attachment to a signature request
+      description: 'Use this endpoint to provide supplementary documents (for example, Terms &
+
+        Conditions or appendices) to participants of a `SignatureRequest`.
+
+
+        Attachments are delivered to participants together with the
+
+        `SignatureRequest`.
+
+
+        **Content type limits**:
+
+        The Skribble API accepts PDF files, image files, Microsoft Office files, and
+
+        plain text files.
+
+
+        Allowed content types:
+
+        - application/pdf
+
+        - application/x-tika-msoffice
+
+        - application/x-tika-ooxml
+
+        - application/msword
+
+        - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+        - application/vnd.ms-word.document.macroEnabled.12
+
+        - application/vnd.ms-excel
+
+        - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+        - application/vnd.ms-excel.sheet.macroenabled.12
+
+        - application/vnd.ms-powerpoint
+
+        - application/vnd.openxmlformats-officedocument.presentationml.presentation
+
+        - application/vnd.ms-powerpoint.presentation.macroEnabled.12
+
+        - image/gif
+
+        - image/jpeg
+
+        - image/png
+
+        - text/plain
+
+
+        **Content size limits**:
+
+        The maximum size of a single attachment is approximately 40 MB.
+
+        The maximum request size is 60 MB. Exceeding it is rejected by the
+
+        gateway in front of the API before the request reaches it, returning a
+
+        `403 Forbidden` response. This currently returns a plain body instead
+
+        of the standard Problem+JSON error envelope used elsewhere in this
+
+        API; a fix to align it is planned.
+
+
+        **Amount limits**:
+
+        There is currently no limit on the number of attachments per
+
+        SignatureRequest. Abuse of this service may result in enforced limits.'
+      operationId: createSignatureAttachment
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      requestBody:
+        description: Request body to create a SignatureAttachment object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSignatureAttachmentRequest'
+            examples:
+              Attachment:
+                summary: PDF attachment
+                value:
+                  filename: Attachment-1.pdf
+                  content_type: application/pdf
+                  content: SGVsbG8gd29ybGQh
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureResponse'
+              examples:
+                Attachment1:
+                  $ref: '#/components/examples/CreateSignatureAttachmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/ForbiddenOrPayloadTooLarge'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /signature-requests/{SR_ID}/attachments/{ATTACHMENT_ID}/content:
+    get:
+      tags:
+      - Signature Attachment
+      summary: Get Signature Attachment content
+      description: 'Downloads the content of the attachment identified by `ATTACHMENT_ID`
+
+        for the `SignatureRequest` with the ID `SR_ID`.'
+      operationId: getSignatureAttachmentContent
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      - $ref: '#/components/parameters/AttachmentIDPath'
+      responses:
+        '200':
+          description: Binary attachment content.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /signature-requests/{SR_ID}/attachments/{ATTACHMENT_ID}:
+    delete:
+      tags:
+      - Signature Attachment
+      summary: Remove an attachment from a signature request
+      description: 'Deletes the attachment identified by `ATTACHMENT_ID` from the
+
+        `SignatureRequest` with the ID `SR_ID`.'
+      operationId: deleteSignatureAttachment
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      - $ref: '#/components/parameters/AttachmentIDPath'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+components:
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and only present
+
+        for errors that carry a machine-readable code.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g. `api.skribble.com`
+
+            and `api.skribble.de` for the production regions; other environments
+
+            use their respective hosts). Match on the path segment after `/problem/`
+
+            rather than the full URI. Known values:
+
+
+            - `https://api.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://api.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://api.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://api.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://api.skribble.com/problem/parameterized` — parameterized error with details
+
+            - `https://api.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://api.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v2/signature-requests
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: 'Optional machine-readable error key. Present for a subset of errors that carry
+
+            a stable code. Prefer matching on this field over parsing `message`, which is
+
+            not part of the stable contract.
+
+
+            Known keys, grouped by category:
+
+
+            Authentication (`403`):
+
+
+            - `error.auth.token_expired`: the access token has expired
+
+            - `error.auth.token_invalid`: the access token is malformed or otherwise invalid
+
+            - `error.auth.credentials_invalid`: the supplied credentials were rejected
+
+
+            Rate limiting (`429`):
+
+
+            - `error.rate_limit.exceeded`: a generic rate limit was exceeded
+
+            - `error.rate_limit.reminder`: the per-signature-request reminder limit was exceeded
+
+
+            File upload / attachment (`400`):
+
+
+            - `file.attachment.unsupported`: the uploaded attachment type is not supported
+
+            - `file.malware.detected`: malware was detected in the uploaded file
+
+
+            PDF processing (`400`):
+
+
+            - `file.pdf.general_error`: the PDF could not be loaded (corrupt or unreadable)
+
+            - `file.pdf.encryption.unknown_password`: the PDF is encrypted with an unknown password
+
+            - `file.pdf.encryption.no_changes_allowed`: the PDF''s signature permissions (DocMDP) do not allow the required changes
+
+            - `file.pdf.encryption.unknown_permissions`: the PDF is encrypted with an unknown permissions type
+
+            - `file.pdf.signature_verification.failed`: verification of an existing PDF signature failed
+
+
+            Signature request (`400`):
+
+
+            - `error.sr.last_document_cannot_be_removed`: the request would remove the only remaining document from the signature request; an SR must keep at least one document'
+          example: file.attachment.unsupported
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Validation failed for JSON object
+    SignatureQuality:
+      title: Signature Quality
+      type: string
+      description: 'Minimal quality of the signatures for this signature request.
+
+
+        | Quality | Description |
+
+        | --- | --- |
+
+        | **QES** | Every signer must use QES. This is the **default** quality. Requires a `legislation` parameter. |
+
+        | **AES_MINIMAL** | Signers will use QES if available, otherwise AES. At least AES is guaranteed. Requires a `legislation` parameter. |
+
+        | **AES** | Every signer uses AES. |
+
+        | **SES** | Every signer uses SES. |
+
+        | **DEMO** | Every signer uses a DEMO signature with **no legal binding**. API demo users (`api_demo_example_*`) get this quality by default. |
+
+        | **PART11** | Signers use a signature compliant with 21 CFR Part 11 regulations. |'
+      enum:
+      - SES
+      - AES
+      - AES_MINIMAL
+      - QES
+      - DEMO
+      - PART11
+      example: QES
+    SignatureAttachment:
+      title: Signature Attachment
+      type: object
+      properties:
+        attachment_id:
+          type: string
+          format: uuid
+          example: 8ed33046-3798-8c54-0b13-0820d0d6e121
+        filename:
+          type: string
+          example: Attachment.pdf
+    CreateSignatureAttachmentRequest:
+      title: Create Signature Attachment Request
+      required:
+      - filename
+      - content_type
+      - content
+      type: object
+      properties:
+        filename:
+          type: string
+          description: File name of the attachment.
+          example: Attachment-1.pdf
+        content_type:
+          type: string
+          description: 'Content type of the attachment. Supported types:
+
+            `application/pdf`, `application/x-tika-msoffice`, `application/x-tika-ooxml`,
+
+            `application/msword`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document`,
+
+            `application/vnd.ms-word.document.macroEnabled.12`, `application/vnd.ms-excel`,
+
+            `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`,
+
+            `application/vnd.ms-excel.sheet.macroenabled.12`, `application/vnd.ms-powerpoint`,
+
+            `application/vnd.openxmlformats-officedocument.presentationml.presentation`,
+
+            `application/vnd.ms-powerpoint.presentation.macroEnabled.12`,
+
+            `image/gif`, `image/jpeg`, `image/png`, `text/plain`'
+          example: application/pdf
+        content:
+          type: string
+          description: Base64 encoded bytes of the attachment.
+          format: byte
+          example: SGVsbG8gd29ybGQh
+    SignatureLegislation:
+      title: Signature Legislation
+      type: string
+      description: 'Legislation under which the signatures are created. Required when `quality` is `QES` or `AES_MINIMAL`.
+
+
+        | Legislation | Description |
+
+        | --- | --- |
+
+        | **ZERTES** | QES according to Swiss law. This is the **default**. |
+
+        | **EIDAS** | QES according to EU law. |'
+      enum:
+      - ZERTES
+      - EIDAS
+      example: ZERTES
+    VisualSignatureResponse:
+      title: Visual Signature Response
+      type: object
+      description: Visual signature placement information.
+      properties:
+        image:
+          $ref: '#/components/schemas/VisualSignatureImage'
+        position:
+          description: Position where the signature should appear.
+          $ref: '#/components/schemas/VisualSignaturePosition'
+        positions:
+          type: array
+          description: List of additional positions where the signature should appear.
+          items:
+            $ref: '#/components/schemas/VisualSignaturePosition'
+        form_field:
+          type: string
+          description: 'Name of the form field in which the signature is placed. If multiple fields of this name are present in the document, all will be used. Takes precedence before positions.
+
+            '
+          example: Signature1
+        text:
+          type: object
+          description: Text displayed inside the form field.
+          properties:
+            content:
+              type: string
+              description: Content of the text field.
+              example: Customer Signature
+            font_name:
+              type: string
+              description: 'Font name used. For PDF: all default PDF fonts or fonts already embedded in the document.
+
+                '
+              example: Helvetica-Bold
+            font_size:
+              type: string
+              description: Font size used.
+              example: '12'
+            font_color:
+              type: string
+              description: Font color as RGB value encoded in hex.
+              example: '#ff0000'
+    SignatureRecipientResponse:
+      title: Signature Callbacks Response
+      type: object
+      properties:
+        sid:
+          type: string
+          format: uuid
+          example: 894a0240-e01a-2307-4376-0267c6a8d105
+        status_code:
+          $ref: '#/components/schemas/SignatureStatusCode'
+        account_email:
+          type: string
+          format: email
+          example: you@example.info
+        signer_identity_data:
+          $ref: '#/components/schemas/SignerIdentityDataResponse'
+        sequence:
+          type: integer
+          format: int32
+          example: -1
+        notify:
+          type: boolean
+          description: 'Whether Skribble sends notification emails to this signer. When set to `false` together with
+
+            `signer_identity_data.identity_reference`, the TAN-based email validation for No-Account-Signers (SES) is skipped.'
+          example: true
+        signing_url:
+          type: string
+          format: uri
+          description: 'A personalized signing URL for this specific signer, distinct from the top-level signing_url of the SignatureRequest.
+
+            It points to the Skribble web application and will directly open the document for signing
+
+            provided that the user is known to Skribble and is logged in.
+
+            Otherwise, the user must login or register first to be able to see the document.
+
+
+            When the user visits this URL, they will be forwarded to a special preview page of the PDF document and can start the signature process as usual.
+
+
+            You can add the following query parameters to this signing_url. Skribble will respect these parameters and redirect the user to the provided URLs once the signature process is finished.
+
+
+            Example: `https://my.skribble.com/view/4f43614a-de50-bfe1-2df3-4c881fc7840e/cd16bd0802d146fd94ff736d7d7bf551?exitURL=https%3A%2F%2Fmy-app.com%2Fsigned&redirectTimeout=10`
+
+
+            | Parameter | Type | Description |
+
+            | --- | --- | --- |
+
+            | `exitURL` | string (URL-encoded) | Optional URL to redirect after the signature process finished. Example: `https%3A%2F%2Fgoogle.com` |
+
+            | `errorURL` | string (URL-encoded) | Optional URL to redirect in case of an error. Defaults to `exitURL`. Ignored if `exitURL` is not set. Example: `https%3A%2F%2Fbing.com` |
+
+            | `declineURL` | string (URL-encoded) | Optional URL to redirect when the user declines. Defaults to `exitURL`. Ignored if `exitURL` is not set. |
+
+            | `hidedownload` | boolean | Optional flag to hide the download button on the success screen. Requires `exitURL` to be set. Example: `true` |
+
+            | `redirectTimeout` | integer | Optional seconds before auto-redirect after signing. Min 0 (instant), max 90. Default: 45. Example: `20` |
+
+            | `lang` | string | Optional language code to display the signing page in a specific language. Supported values: `en` (default), `de`, `fr`. Example: `lang=fr` |
+
+            | `overlay` | boolean | Optional flag to show or hide the Skribble overlay on the signing page. |'
+          example: https://my.skribble.com/view/4f43614a-de50-bfe1-2df3-4c881fc7840e/cd16bd0802d146fd94ff736d7d7bf551
+        decline_message:
+          type: string
+          description: The message provided by the signer when declining the signature request. Only present if the signer declined and provided a message.
+        signed_at:
+          type: string
+          format: date-time
+          description: Timestamp when this signer signed the document.
+          example: '2025-10-09T12:15:30.000Z'
+        signed_legislation:
+          $ref: '#/components/schemas/SignatureLegislation'
+          description: The legislation under which this signer's signature was created. Only present after signing.
+        signed_quality:
+          $ref: '#/components/schemas/SignatureQuality'
+          description: The actual quality of this signer's signature. Only present after signing.
+        last_viewed_at:
+          type: string
+          format: date-time
+          description: Timestamp when this signer last viewed the document.
+          example: '2025-10-09T12:10:00.000Z'
+        language:
+          type: string
+          description: Language preference for this signer.
+          example: en
+        visual_signature:
+          $ref: '#/components/schemas/VisualSignatureResponse'
+    PayloadTooLarge:
+      type: string
+      description: 'Plain-text or HTML body returned by the gateway in front of the API when
+
+        a request is rejected for exceeding the maximum allowed size, before it
+
+        reaches the API. Pending a fix to align this with the standard
+
+        Problem+JSON envelope used elsewhere in this API.'
+    AttachOnSuccess:
+      title: Attachment when signed
+      type: array
+      description: "When a SignatureRequest has been signed by all signers, all signers and all observers are notified by email.\nSkribble provides the option to attach two types of attachments automatically to this email:\n  - the signed document and\n  - the signature protocol.\n\nThis can be configured via the business settings, which can be used to define that these documents should generally\nbe attached for all SignatureRequests created by business members.\n\nAlternatively it is possible to define the attachments on demand per SignatureRequest by using this field."
+      items:
+        type: string
+        enum:
+        - SIGNED_DOCUMENT
+        - SIGNATURE_PROTOCOL
+      example:
+      - SIGNED_DOCUMENT
+      - SIGNATURE_PROTOCOL
+    SignatureLanguage:
+      title: Signature Language
+      type: string
+      description: Determines in which language e-mails are sent to the user, if the user has not set their language preference yet.
+      enum:
+      - en
+      - de
+      - fr
+      - it
+      default: en
+    VisualSignaturePosition:
+      title: Visual Signature Position
+      type: object
+      properties:
+        page:
+          type: string
+          description: 'Page number (0-indexed) where the signature appears.
+
+            This is a String and not a number!'
+          example: '0'
+        height:
+          type: number
+          description: Height of the signature in pixels.
+          example: 70
+        width:
+          type: number
+          description: Width of the signature in pixels.
+          example: 150
+        x:
+          type: number
+          description: X-coordinate (pixels from left) of signature.
+          example: 350
+        y:
+          type: number
+          description: Y-coordinate (pixels from top) of signature.
+          example: 240
+        rotation:
+          type: number
+          description: "Defines a rotation of the field content. \nIf used in context with a form field, then only the values 0, 90, 180, 270 are legal.\nOtherwise every value is legal. The rotation is applied counter clockwise."
+          example: 0
+    SignerIdentityDataResponse:
+      title: Signer Identity Data in Response
+      type: object
+      description: Signer identity information returned as part of the SignatureRequest response.
+      properties:
+        email_address:
+          type: string
+          description: Email address of the no-account-signer.
+          format: email
+          example: nas@example.com
+        first_name:
+          type: string
+          description: First name of the no-account-signer.
+          example: John
+        last_name:
+          type: string
+          description: Last name of the no-account-signer.
+          example: Doe
+        mobile_number:
+          type: string
+          description: 'Mobile number of the no-account-signer in E.164 format without the leading `+`:
+
+            country code + area code + number, no spaces or special characters.'
+          example: '41791234567'
+        language:
+          $ref: '#/components/schemas/SignatureLanguage'
+        identity_reference:
+          type: string
+          description: Customer-generated identifier for further identification of the signer.
+          example: Internal-ID-012345
+        identification_require_evidence:
+          type: boolean
+          description: If set, a new identification process is started to get fresh evidence records, even if the signer is already identified.
+          example: true
+        force_standard_qes:
+          type: boolean
+          description: 'If set to `true`, this signer is always identified via the standard QES flow and is never routed
+
+            through Express QES, regardless of the business''s Express QES setting or other identity flags such as
+
+            `identification_require_evidence`.'
+          example: true
+        provider:
+          type: string
+          description: Evidence provider used to verify the signer's identity.
+          example: swisscom_ra_app
+        evidence_id:
+          type: string
+          description: 'ID of the evidence records created during identification. Populated in the
+
+            `SignatureRequest` response once the identification process has been completed.'
+          example: '700580648'
+    SignatureResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 4f43614a-de50-bfe1-2df3-4c881fc7840e
+        title:
+          type: string
+          example: Example contract
+        message:
+          type: string
+          example: Please sign this document!
+        document_id:
+          type: string
+          format: uuid
+          example: 29eae6aa-5558-2ada-2870-d4e654c0da5c
+        legislation:
+          $ref: '#/components/schemas/SignatureLegislation'
+        quality:
+          $ref: '#/components/schemas/SignatureQuality'
+        signing_url:
+          type: string
+          format: uri
+          description: The URL for the SignatureRequest owner to view and manage the request in the Skribble web application. This URL is not intended for signers — each signer has their own dedicated signing_url within the signatures array.
+          example: https://my.skribble.com/view/4f43614a-de50-bfe1-2df3-4c881fc7840e
+        status_overall:
+          $ref: '#/components/schemas/SignatureStatusOverall'
+        business:
+          type: string
+          example: biz-42b4c2fb9ee947778ba70bc0698c78f7
+        signatures:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignatureRecipientResponse'
+        cc_email_addresses:
+          type: array
+          items:
+            type: string
+            format: email
+          example: []
+        auto_delete_at:
+          type: string
+          format: date
+          description: 'Server-managed date on which this signature request and its related documents are automatically
+
+            deleted in line with the owning business''s retention policy. Not directly settable by API clients.
+
+            May be absent or `null` when no retention policy applies.'
+          example: '2026-04-21'
+        expires_at:
+          type: string
+          format: date
+          description: 'Owner-set expiry date for this signature request. When this date passes, the request
+
+            transitions to `status_overall=EXPIRED`. Set via `expires_at` at create time.
+
+            Absent or `null` when no owner-set expiry has been configured.'
+          example: '2026-12-31'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignatureAttachment'
+          example: []
+        attach_on_success:
+          $ref: '#/components/schemas/AttachOnSuccess'
+        custom:
+          type: string
+          description: Custom field for storing application-specific data related to this signature request.
+          example: MyCustomvalue1,MyVal2
+        owner:
+          type: string
+          example: api_demo_example
+        read_access:
+          type: array
+          description: Users or API keys with read access to this signature request.
+          items:
+            type: string
+          example:
+          - persononetosign@external.net
+          - api_demo_example
+          - you@example.info
+          - persontwotosign@external.net
+        write_access:
+          type: array
+          description: Users or API keys with write access to this signature request.
+          items:
+            type: string
+          example:
+          - api_demo_example
+        created_at:
+          type: string
+          format: date-time
+          example: '2025-10-08T17:37:03.569Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2025-10-08T17:37:03.569Z'
+        callback_success_url:
+          type: string
+          description: Callback URL called on overall success. See the request schema for supported placeholders and retry behaviour.
+          format: uri
+          example: https://mybiz.com/call/success
+        callback_error_url:
+          type: string
+          description: Callback URL called when a signer declines or the request is withdrawn. See the request schema for supported placeholders and retry behaviour.
+          format: uri
+          example: https://mybiz.com/call/error
+        callback_update_url:
+          type: string
+          description: Callback URL called on any update (e.g. one signer signed). See the request schema for supported placeholders and retry behaviour.
+          format: uri
+          example: https://mybiz.com/call/update
+        callback_start_sign_url:
+          type: string
+          description: Callback URL called when a signer starts the signature process (only for Express QES). See the request schema for supported placeholders and retry behaviour.
+          format: uri
+          example: https://mybiz.com/call/start-sign
+        callback_ident_pending_url:
+          type: string
+          description: Callback URL called when the identification of a signer requires manual review. See the request schema for supported placeholders and retry behaviour.
+          format: uri
+          example: https://mybiz.com/call/ident-pending
+        callback_ident_error_url:
+          type: string
+          description: Callback URL called when the identification of a signer ends in an error. See the request schema for supported placeholders and retry behaviour.
+          format: uri
+          example: https://mybiz.com/call/ident-error
+    SignatureStatusCode:
+      title: Signature Status Code
+      type: string
+      description: "The state of a signature.\n\nPossible values:\n  - **OPEN** Waiting for the user to sign a signature.\n  - **WAITING** The signer is waiting for a preceding signer in the sequence to complete.\n  - **DECLINED** The user declined to sign.\n  - **WITHDRAWN** The owner has withdrawn the signature request.\n  - **SIGNED** The user signed the document.\n  - **ERROR** A technical error occurred."
+      enum:
+      - OPEN
+      - WAITING
+      - DECLINED
+      - WITHDRAWN
+      - SIGNED
+      - ERROR
+      example: SIGNED
+    VisualSignatureImage:
+      title: Visual Signature Image
+      type: object
+      description: Visual signature image.
+      required:
+      - content
+      - content_type
+      properties:
+        content:
+          type: string
+          description: Base64 encoded bytes of content.
+          format: byte
+          example: SGVsbG8gd29ybGQh
+        content_type:
+          type: string
+          description: Content type of bytes sent in content. At the moment this MUST be image/png
+          example: image/png
+        content_size:
+          type: integer
+          format: int32
+          description: Size of `content` in bytes. Calculated by the server.
+          readOnly: true
+          example: 3160
+    SignatureStatusOverall:
+      title: Signature Status Overall
+      type: string
+      description: "Overall signing status of the document.\n\nPossible values:\n  - **OPEN** At least one user has not signed or declined their signature yet.\n  - **DECLINED** At least one user declined to sign. The signature request failed.\n  - **WITHDRAWN** The owner has withdrawn the signature request.\n  - **SIGNED** All users signed the document. The signature request was successfully completed.\n  - **EXPIRED** The owner-set `expires_at` date has passed before all signers signed. Terminal status.\n  - **ERROR** A technical error occurred. The signature request cannot be completed."
+      enum:
+      - OPEN
+      - DECLINED
+      - WITHDRAWN
+      - SIGNED
+      - EXPIRED
+      - ERROR
+      example: OPEN
+  responses:
+    NotAcceptable:
+      description: Not acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 406
+            message: Content type not supported
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/entity-not-found
+            method: GET
+            path: /v2/signature-requests/00000000-0000-0000-0000-000000000000
+            status: 404
+            message: SignatureRequest not found
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests
+            status: 401
+            message: Unauthorized
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 500
+            message: Internal server error
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 400
+            message: Validation failed for JSON object
+    ForbiddenOrPayloadTooLarge:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          examples:
+            AccessDenied:
+              value:
+                type: https://api.skribble.com/problem/problem-with-message
+                method: GET
+                path: /v2/signature-requests/4f43614a-de50-bfe1-2df3-4c881fc7840e
+                status: 403
+                message: Access denied
+            FeatureNotEnabled:
+              value:
+                type: https://api.skribble.com/problem/feature-not-enabled
+                method: POST
+                path: /v2/signature-requests
+                status: 403
+                message: '''expires_at'' is not supported. Feature is not enabled.'
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/PayloadTooLarge'
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 429
+            message: Too many requests
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 503
+            message: Service unavailable
+  examples:
+    CreateSignatureAttachmentResponse:
+      summary: Sample with attachment
+      value:
+        id: 4f43614a-de50-bfe1-2df3-4c881fc7840e
+        title: Sample document
+        message: Please sign this document.
+        document_id: 1ff0cf91-6b54-f3bd-bffb-8fcd5e799764
+        attachments:
+        - attachment_id: 8ed33046-3798-8c54-0b13-0820d0d6e121
+          filename: Attachment.pdf
+  parameters:
+    SignatureIDPath:
+      name: SR_ID
+      in: path
+      description: Unique ID received when creating the Signature Request object
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: cccccccc-4a6a-a958-a42e-6ea4172a378b
+    AttachmentIDPath:
+      name: ATTACHMENT_ID
+      in: path
+      description: Unique ID returned when the Signature Attachment is created.
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 8ed33046-3798-8c54-0b13-0820d0d6e121
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-sign-v3-openapi.yml
+- skribble-sign-v2-openapi.yml
+- skribble-sign-v3-openapi.yml

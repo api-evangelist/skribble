@@ -1,0 +1,690 @@
+openapi: 3.2.0
+info:
+  title: Skribble Access API
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  version: '1.0'
+  description: 'Operations tagged Access across 5 of this provider''s published API definitions: skribble-sign-v3-openapi.yml, skribble-validation-v1-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml, skribble-validation-v1-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.skribble.com/v3
+  description: Production - Switzerland
+- url: https://api.skribble.de/v3
+  description: Production - Germany
+- url: https://document-validation.skribble.com/v1
+  description: Production - Switzerland
+- url: https://document-validation.skribble.de/v1
+  description: Production - Germany
+- url: https://api.skribble.com/v2
+  description: Production - Switzerland
+- url: https://api.skribble.de/v2
+  description: Production - Germany
+security: []
+tags:
+- name: Access
+  description: Endpoints for authentication, authorization, and user access management.
+paths:
+  /access/login:
+    post:
+      tags:
+      - Access
+      summary: Authenticate and Obtain an Access Token
+      description: 'To use the Skribble API, you first need an API key and an API user. Both
+
+        can be managed on the API key page in your business profile. Consult our
+
+        guide for
+
+        setup instructions.
+
+
+        Skribble offers two types of API keys:
+
+
+        **Demo API keys**
+
+
+        Demo API keys are for testing and development purposes. Signatures created
+
+        with demo keys have no legal weight and are free of charge.
+
+
+        Demo keys can be identified by their name, which starts with **api_demo**.
+
+
+        **Production API keys**
+
+
+        Production API keys are used for live systems. Signatures created with
+
+        production keys will be invoiced.
+
+
+        Production keys can be identified by their name, which starts with
+
+        **api_production** or, in some cases, **api_prod**.
+
+
+        > **⚠ Note**
+
+        > All costs incurred by signature requests created with your API keys will
+
+        > be **charged to your business**. We recommend starting with a demo API
+
+        > key during development and testing, and switching to a production key
+
+        > only once testing is complete.
+
+
+        For help setting up Skribble Business, contact us at
+
+        support@skribble.com.
+
+
+        To obtain an access token, authenticate using the `/access/login` endpoint.
+
+        You can pass your credentials as raw JSON or as `x-www-form-urlencoded`
+
+        key-value pairs (see example requests).
+
+
+        Upon successful authentication, a JSON Web Token (JWT) is returned. This
+
+        JWT must be included in nearly every API request.
+
+
+        The access token is passed in the `Authorization` HTTP header using the
+
+        `Bearer` scheme. Example:
+
+        `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI...`
+
+
+        ### Token life cycle
+
+
+        #### API key
+
+
+        API keys have a long but finite lifetime. The validity period depends on
+
+        the volume of API calls and is agreed upon individually as part of the
+
+        shared secret agreement.
+
+
+        #### Access token
+
+
+        Access tokens have a lifetime of approximately **20 minutes**. Automatic
+
+        token renewal is not currently supported.
+
+
+        #### Logout
+
+
+        There is **no logout endpoint**. Access tokens expire automatically after
+
+        the defined lifetime.'
+      operationId: accessLogin
+      security:
+      - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              Credentials:
+                $ref: '#/components/examples/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              Credentials:
+                $ref: '#/components/examples/Login'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: JSON Web Token (JWT)
+              example: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJWlMxY0pXQXlXVFdZeDR6dXRGNzJlYWVILT...
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          description: 'Login failed — username or API key is invalid.
+
+
+            The response body shape depends on the request `Content-Type`:
+
+
+            - `application/json` request → `application/json` Problem envelope
+
+            - `application/x-www-form-urlencoded` request → `text/plain` body containing the error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemResponse'
+              example:
+                type: https://api.skribble.com/problem/problem-with-message
+                method: POST
+                path: /v2/access/login
+                status: 403
+                message: Please ensure your username and api-key are correct
+            text/plain:
+              schema:
+                type: string
+              example: Please ensure your username and api-key are correct!
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+components:
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and only present
+
+        for errors that carry a machine-readable code.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g. `api.skribble.com`
+
+            and `api.skribble.de` for the production regions; other environments
+
+            use their respective hosts). Match on the path segment after `/problem/`
+
+            rather than the full URI. Known values:
+
+
+            - `https://api.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://api.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://api.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://api.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://api.skribble.com/problem/parameterized` — parameterized error with details
+
+            - `https://api.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://api.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v2/signature-requests
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: 'Optional machine-readable error key. Present for a subset of errors that carry
+
+            a stable code. Prefer matching on this field over parsing `message`, which is
+
+            not part of the stable contract.
+
+
+            Known keys, grouped by category:
+
+
+            Authentication (`403`):
+
+
+            - `error.auth.token_expired`: the access token has expired
+
+            - `error.auth.token_invalid`: the access token is malformed or otherwise invalid
+
+            - `error.auth.credentials_invalid`: the supplied credentials were rejected
+
+
+            Rate limiting (`429`):
+
+
+            - `error.rate_limit.exceeded`: a generic rate limit was exceeded
+
+            - `error.rate_limit.reminder`: the per-signature-request reminder limit was exceeded
+
+
+            File upload / attachment (`400`):
+
+
+            - `file.attachment.unsupported`: the uploaded attachment type is not supported
+
+            - `file.malware.detected`: malware was detected in the uploaded file
+
+
+            PDF processing (`400`):
+
+
+            - `file.pdf.general_error`: the PDF could not be loaded (corrupt or unreadable)
+
+            - `file.pdf.encryption.unknown_password`: the PDF is encrypted with an unknown password
+
+            - `file.pdf.encryption.no_changes_allowed`: the PDF''s signature permissions (DocMDP) do not allow the required changes
+
+            - `file.pdf.encryption.unknown_permissions`: the PDF is encrypted with an unknown permissions type
+
+            - `file.pdf.signature_verification.failed`: verification of an existing PDF signature failed
+
+
+            Signature request (`400`):
+
+
+            - `error.sr.last_document_cannot_be_removed`: the request would remove the only remaining document from the signature request; an SR must keep at least one document'
+          example: file.attachment.unsupported
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Validation failed for JSON object
+    LoginRequest:
+      type: object
+      required:
+      - username
+      - api-key
+      properties:
+        username:
+          type: string
+          description: The username of the users credentials to login
+          example: add_your_api_name_here
+        api-key:
+          type: string
+          description: The API key of the users credentials to login
+          example: please_enter_your_password_here
+    ProblemResponse_2:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and reserved
+
+        for future use.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g.
+
+            `document-validation.skribble.com` and `document-validation.skribble.de`
+
+            for the production regions; other environments use their respective
+
+            hosts). Match on the path segment after `/problem/` rather than the full
+
+            URI. Known values:
+
+
+            - `https://document-validation.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://document-validation.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://document-validation.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://document-validation.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://document-validation.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://document-validation.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v1/validate/document
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: Optional machine-readable error key. Reserved for future use.
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Document could not be parsed
+    LoginRequest_2:
+      type: object
+      required:
+      - api-key
+      - username
+      properties:
+        username:
+          type: string
+          example: api_demo_xxx
+          description: Your API key name
+        api-key:
+          type: string
+          example: your_secret_here
+          description: Your API key secret
+    ProblemResponse_3:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and reserved
+
+        for future use.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g.
+
+            `document-validation.skribble.com` and `document-validation.skribble.de`
+
+            for the production regions; other environments use their respective
+
+            hosts). Match on the path segment after `/problem/` rather than the full
+
+            URI. Known values:
+
+
+            - `https://document-validation.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://document-validation.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://document-validation.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://document-validation.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://document-validation.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://document-validation.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v1/validate/document
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: Optional machine-readable error key. Reserved for future use.
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Document could not be parsed
+    LoginRequest_3:
+      type: object
+      required:
+      - api-key
+      - username
+      properties:
+        username:
+          type: string
+          example: api_demo_xxx
+          description: Your API key name
+        api-key:
+          type: string
+          example: your_secret_here
+          description: Your API key secret
+  responses:
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 429
+            message: Too many requests
+    NotAcceptable:
+      description: Not acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 406
+            message: Content type not supported
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 500
+            message: Internal server error
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 503
+            message: Service unavailable
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 400
+            message: Validation failed for JSON object
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_2'
+          example:
+            type: https://document-validation.skribble.com/problem/feature-not-enabled
+            method: POST
+            path: /v1/validate/document
+            status: 403
+            message: Validation API access is not enabled for this business
+    TooManyRequests_2:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_2'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 429
+            message: Too many requests
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_2'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v1/validate/document
+            status: 401
+            message: Authentication required
+    ServerError_2:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_2'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 500
+            message: Internal server error
+    ServiceUnavailable_2:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_2'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 503
+            message: Service unavailable
+    Forbidden_2:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_3'
+          example:
+            type: https://document-validation.skribble.com/problem/feature-not-enabled
+            method: POST
+            path: /v1/validate/document
+            status: 403
+            message: Validation API access is not enabled for this business
+    TooManyRequests_3:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_3'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 429
+            message: Too many requests
+    Unauthorized_2:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_3'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v1/validate/document
+            status: 401
+            message: Authentication required
+    ServerError_3:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_3'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 500
+            message: Internal server error
+    ServiceUnavailable_3:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse_3'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 503
+            message: Service unavailable
+  examples:
+    Login:
+      summary: API credentials
+      value:
+        username: add_your_api_name_here
+        api-key: please_enter_your_password_here
+    Login_2:
+      summary: API credentials
+      value:
+        username: api_demo_xxx
+        api-key: your_secret_here
+    Login_3:
+      summary: API credentials
+      value:
+        username: api_demo_xxx
+        api-key: your_secret_here
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-sign-v3-openapi.yml
+- skribble-validation-v1-openapi.yml
+- skribble-sign-v2-openapi.yml
+- skribble-sign-v3-openapi.yml
+- skribble-validation-v1-openapi.yml

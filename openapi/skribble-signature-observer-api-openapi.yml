@@ -1,0 +1,640 @@
+openapi: 3.2.0
+info:
+  title: Skribble Signature Observer API
+  version: 3.1.0
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  description: 'Operations tagged Signature Observer across 2 of this provider''s published API definitions: skribble-sign-v3-openapi.yml, skribble-sign-v3-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.skribble.com/v3
+  description: Production - Switzerland
+- url: https://api.skribble.de/v3
+  description: Production - Germany
+security: []
+tags:
+- name: Signature Observer
+  description: Endpoints for managing observers on a signature request.
+paths:
+  /signature-requests/{SR_ID}/observers:
+    post:
+      tags:
+      - Signature Observer
+      summary: Add an observer to a signature request
+      description: 'Adds an observer to the specified signature request.
+
+
+        Observers receive email notifications about signing progress and can view
+
+        documents, but cannot sign them.
+
+
+        Adding a **group** observer requires the group-observers feature to be enabled
+
+        for the business. If it is not, the request fails with `403 Forbidden`
+
+        (problem type `feature-not-enabled`).'
+      operationId: addSignatureObserver
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      requestBody:
+        description: Request body to create a SignatureObserver object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSignatureObserverRequest'
+            examples:
+              UserById:
+                $ref: '#/components/examples/CreateUserByIdObserver'
+              UserByMail:
+                $ref: '#/components/examples/CreateUserByMailObserver'
+              Group:
+                $ref: '#/components/examples/CreateGroupObserver'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureObserverResponse'
+              examples:
+                User:
+                  $ref: '#/components/examples/SampleUserObserver'
+                Group:
+                  $ref: '#/components/examples/SampleGroupObserver'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/FeatureNotEnabled'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    get:
+      tags:
+      - Signature Observer
+      summary: List observers of a signature request
+      description: Returns all observers added to the `SignatureRequest` with the ID `SR_ID`.
+      operationId: listSignatureObservers
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SignatureObserverResponse'
+              examples:
+                Observers:
+                  $ref: '#/components/examples/SampleObserverArray'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+  /signature-requests/{SR_ID}/observers/{OBSERVER_ID}:
+    get:
+      tags:
+      - Signature Observer
+      summary: Get an observer of a signature request
+      description: 'Returns the observer identified by `OBSERVER_ID` from the `SignatureRequest`
+
+        with the ID `SR_ID`.'
+      operationId: getSignatureObserver
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      - $ref: '#/components/parameters/ObserverIDPath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureObserverResponse'
+              examples:
+                User:
+                  $ref: '#/components/examples/SampleUserObserver'
+                Group:
+                  $ref: '#/components/examples/SampleGroupObserver'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    delete:
+      tags:
+      - Signature Observer
+      summary: Remove an observer from a signature request
+      description: 'Deletes the observer identified by `OBSERVER_ID` from the `SignatureRequest`
+
+        with the ID `SR_ID`.'
+      operationId: deleteSignatureObserver
+      security:
+      - bearer: []
+      parameters:
+      - $ref: '#/components/parameters/SignatureIDPath'
+      - $ref: '#/components/parameters/ObserverIDPath'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+components:
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and only present
+
+        for errors that carry a machine-readable code.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g. `api.skribble.com`
+
+            and `api.skribble.de` for the production regions; other environments
+
+            use their respective hosts). Match on the path segment after `/problem/`
+
+            rather than the full URI. Known values:
+
+
+            - `https://api.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://api.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://api.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://api.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://api.skribble.com/problem/parameterized` — parameterized error with details
+
+            - `https://api.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://api.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v2/signature-requests
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: 'Optional machine-readable error key. Present for a subset of errors that carry
+
+            a stable code. Prefer matching on this field over parsing `message`, which is
+
+            not part of the stable contract.
+
+
+            Known keys, grouped by category:
+
+
+            Authentication (`403`):
+
+
+            - `error.auth.token_expired`: the access token has expired
+
+            - `error.auth.token_invalid`: the access token is malformed or otherwise invalid
+
+            - `error.auth.credentials_invalid`: the supplied credentials were rejected
+
+
+            Rate limiting (`429`):
+
+
+            - `error.rate_limit.exceeded`: a generic rate limit was exceeded
+
+            - `error.rate_limit.reminder`: the per-signature-request reminder limit was exceeded
+
+
+            File upload / attachment (`400`):
+
+
+            - `file.attachment.unsupported`: the uploaded attachment type is not supported
+
+            - `file.malware.detected`: malware was detected in the uploaded file
+
+
+            PDF processing (`400`):
+
+
+            - `file.pdf.general_error`: the PDF could not be loaded (corrupt or unreadable)
+
+            - `file.pdf.encryption.unknown_password`: the PDF is encrypted with an unknown password
+
+            - `file.pdf.encryption.no_changes_allowed`: the PDF''s signature permissions (DocMDP) do not allow the required changes
+
+            - `file.pdf.encryption.unknown_permissions`: the PDF is encrypted with an unknown permissions type
+
+            - `file.pdf.signature_verification.failed`: verification of an existing PDF signature failed
+
+
+            Signature request (`400`):
+
+
+            - `error.sr.last_document_cannot_be_removed`: the request would remove the only remaining document from the signature request; an SR must keep at least one document'
+          example: file.attachment.unsupported
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Validation failed for JSON object
+    GroupObserverResponse:
+      title: Group Observer Response
+      type: object
+      required:
+      - id
+      - type
+      - invited_at
+      - invited_by
+      - group_info
+      properties:
+        id:
+          type: string
+          description: Unique observer identifier.
+          example: ob_456
+        type:
+          type: string
+          description: Observer type.
+          const: GROUP
+          example: GROUP
+        invited_at:
+          type: string
+          format: date-time
+          description: Timestamp when the observer was invited.
+          example: '2026-02-02T12:34:56Z'
+        invited_by:
+          type: string
+          description: Identifier of the user or API key that invited the observer.
+          example: api_demo_example
+        group_info:
+          type: object
+          description: Information about the group observer.
+          required:
+          - id
+          - name
+          properties:
+            id:
+              type: string
+              description: Group ID.
+              example: gr_456
+            name:
+              type: string
+              description: Group name.
+              example: Group 1
+            version_id:
+              type: string
+              description: Group version identifier.
+              example: gv_12
+    UserObserverResponse:
+      title: User Observer Response
+      type: object
+      required:
+      - id
+      - type
+      - invited_at
+      - invited_by
+      - user_info
+      properties:
+        id:
+          type: string
+          description: Unique observer identifier.
+          example: ob_123
+        type:
+          type: string
+          description: Observer type.
+          const: USER
+          example: USER
+        invited_at:
+          type: string
+          format: date-time
+          description: Timestamp when the observer was invited.
+          example: '2026-02-02T12:34:56Z'
+        invited_by:
+          type: string
+          description: Identifier of the user or API key that invited the observer.
+          example: api_demo_example
+        user_info:
+          type: object
+          description: Information about the user observer.
+          properties:
+            id:
+              type: string
+              description: User ID.
+              example: '123'
+            email:
+              type: string
+              format: email
+              description: User email address.
+              example: you@example.info
+    CreateSignatureObserverRequest:
+      title: Signature Observer
+      type: object
+      description: 'Defines an observer target which can either be a USER or a GROUP.
+
+
+        - For type USER, either email or user_id must be provided (but not both). When using email, a user will be automatically created if not present and returned.
+
+        - For type GROUP, group_id must be provided and no user fields are allowed.'
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Type of observer target.
+          enum:
+          - USER
+          - GROUP
+          example: USER
+      oneOf:
+      - title: User Observer
+        type: object
+        required:
+        - type
+        properties:
+          type:
+            const: USER
+        oneOf:
+        - title: User by Email
+          required:
+          - email
+          properties:
+            email:
+              type: string
+              format: email
+              description: Email address of the user.
+              example: observer@example.info
+        - title: User by ID
+          required:
+          - user_id
+          properties:
+            user_id:
+              type: string
+              description: Unique user identifier.
+              example: usr_123
+      - title: Group Observer
+        type: object
+        required:
+        - type
+        - group_id
+        properties:
+          type:
+            const: GROUP
+          group_id:
+            type: string
+            description: Unique group identifier.
+            example: gr_456
+    SignatureObserverResponse:
+      description: 'Response object representing an observer that has been added to a signature request.
+
+
+        Depending on the type, either user_info or group_info is present.'
+      oneOf:
+      - $ref: '#/components/schemas/UserObserverResponse'
+      - $ref: '#/components/schemas/GroupObserverResponse'
+      discriminator:
+        propertyName: type
+        mapping:
+          USER: '#/components/schemas/UserObserverResponse'
+          GROUP: '#/components/schemas/GroupObserverResponse'
+  examples:
+    SampleUserObserver:
+      summary: User by ID or Mail
+      value:
+        id: ob_123
+        type: USER
+        invited_at: '2026-02-02T12:34:56Z'
+        invited_by: admin@example.com
+        user_info:
+          id: usr_123
+          email: observer@example.info
+    SampleObserverArray:
+      summary: List
+      value:
+      - id: ob_123
+        type: USER
+        invited_at: '2026-02-02T12:34:56Z'
+        invited_by: admin@example.com
+        user_info:
+          id: usr_123
+          email: observer@example.info
+      - id: ob_124
+        type: GROUP
+        invited_at: '2026-02-02T12:40:00Z'
+        invited_by: admin@example.com
+        group_info:
+          id: gr_456
+          name: Group 1
+          version_id: gv_12
+    SampleGroupObserver:
+      summary: Group
+      value:
+        id: ob_124
+        type: GROUP
+        invited_at: '2026-02-02T12:40:00Z'
+        invited_by: admin@example.com
+        group_info:
+          id: gr_456
+          name: Group 1
+          version_id: gv_12
+    CreateGroupObserver:
+      summary: Group Observer
+      value:
+        type: GROUP
+        group_id: gr_456
+    CreateUserByIdObserver:
+      summary: User by ID Observer
+      value:
+        type: USER
+        user_id: '123'
+    CreateUserByMailObserver:
+      summary: User by Mail Observer
+      value:
+        type: USER
+        email: observer@example.info
+  responses:
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/entity-not-found
+            method: GET
+            path: /v2/signature-requests/00000000-0000-0000-0000-000000000000
+            status: 404
+            message: SignatureRequest not found
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests
+            status: 401
+            message: Unauthorized
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 500
+            message: Internal server error
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 400
+            message: Validation failed for JSON object
+    FeatureNotEnabled:
+      description: 'The requested operation depends on a feature that is not enabled for the
+
+        business. The response carries the problem type
+
+        `https://api.skribble.com/problem/feature-not-enabled`.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/feature-not-enabled
+            method: POST
+            path: /v2/signature-requests
+            status: 403
+            message: '''expires_at'' is not supported. Feature is not enabled.'
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 429
+            message: Too many requests
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 503
+            message: Service unavailable
+  parameters:
+    SignatureIDPath:
+      name: SR_ID
+      in: path
+      description: Unique ID received when creating the Signature Request object
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: cccccccc-4a6a-a958-a42e-6ea4172a378b
+    ObserverIDPath:
+      name: OBSERVER_ID
+      in: path
+      description: Unique ID returned when the Signature Observer is created.
+      required: true
+      schema:
+        type: string
+      example: ob_123
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-sign-v3-openapi.yml
+- skribble-sign-v3-openapi.yml

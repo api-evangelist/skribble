@@ -1,0 +1,17 @@
+generated: '2026-10-18'
+method: searched
+generator: extract-docs-artifacts.py (deepseek)
+source: https://docs.skribble.com/business-admin/api/apicreate
+sources:
+- https://docs.skribble.com/business-admin/api/apicreate
+- https://docs.skribble.com/business-admin/integrations/google
+- https://docs.skribble.com/business-admin/integrations/microsoft
+- https://help.skribble.com/de/-en-signing-a-document
+description: Authentication schemes for Skribble API
+schemes:
+- type: apiKey
+  name: API key
+  evidence: You can view the API key (your password) and your username in the next step
+  how_to_obtain: Create API keys in the Admin area under API keys
+docs: https://docs.skribble.com/business-admin/api/apicreate
+note: The pages mention API credentials consisting of username and API key, but don't specify exactly where they go in requests

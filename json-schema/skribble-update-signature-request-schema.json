@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/skribble/main/json-schema/skribble-update-signature-request-schema.json",
+  "title": "Update Signature Request",
+  "x-generated": "2026-10-18",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/skribble-sign-v2-openapi.yml#/components/schemas/UpdateSignatureRequest",
+  "type": "object",
+  "required": [
+    "id"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique ID of the signature request.",
+      "format": "uuid"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the signature request."
+    },
+    "message": {
+      "type": "string",
+      "description": "Message sent to the other participants along with this signature request."
+    },
+    "legislation": {
+      "$ref": "#/$defs/SignatureLegislation"
+    },
+    "quality": {
+      "$ref": "#/$defs/SignatureQuality"
+    },
+    "signatures": {
+      "oneOf": [
+        {
+          "type": "null",
+          "title": "No signers"
+        },
+        {
+          "type": "array",
+          "title": "Signers",
+          "description": "List of recipients required to sign the document.",
+          "items": {
+            "$ref": "#/$defs/SignatureRecipient"
+          }
+        }
+      ]
+    },
+    "cc_email_addresses": {
+      "oneOf": [
+        {
+          "type": "null",
+          "title": "No update"
+        },
+        {
+          "type": "array",
+          "title": "Update in Observers",
+          "description": "Observer email addresses of users who are granted read access and to whom notifications are sent.",
+          "items": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      ]
+    },
+    "callback_success_url": {
+      "type": "string",
+      "description": "Callback-URL which is called on overall success.",
+      "format": "uri"
+    },
+    "callback_error_url": {
+      "type": "string",
+      "description": "Callback-URL which is called in case of an error.",
+      "format": "uri"
+    },
+    "callback_update_url": {
+      "type": "string",
+      "description": "Callback-URL which is called in case of an update.",
+      "format": "uri"
+    },
+    "callback_start_sign_url": {
+      "type": "string",
+      "description": "Callback-URL which is called when a signer starts the signature process (only for Express QES).",
+      "format": "uri"
+    },
+    "callback_ident_pending_url": {
+      "type": "string",
+      "description": "Callback-URL which is called when the identification of a signer requires manual review.",
+      "format": "uri"
+    },
+    "callback_ident_error_url": {
+      "type": "string",
+      "description": "Callback-URL which is called when the identification of a signer ends in an error.",
+      "format": "uri"
+    },
+    "attach_on_success": {
+      "oneOf": [
+        {
+          "type": "null",
+          "title": "No update"
+        },
+        {
+          "$ref": "#/$defs/AttachOnSuccess"
+        }
+      ]
+    },
+    "write_access": {
+      "oneOf": [
+        {
+          "type": "null",
+          "title": "No update"
+        },
+        {
+          "type": "array",
+          "title": "Specific write access",
+          "description": "Users or API keys with write access to this signature request.",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "AttachOnSuccess": {
+      "title": "Attachment when signed",
+      "type": "array",
+      "description": "When a SignatureRequest has been signed by all signers, all signers and all observers are notified by email.\nSkribble provides the option to attach two types of attachments automatically to this email:\n  - the signed document and\n  - the signature protocol.\n\nThis can be configured via the business settings, which can be used to define that these documents should generally\nbe attached for all SignatureRequests created by business members.\n\nAlternatively it is possible to define the attachments on demand per SignatureRequest by using this field.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "SIGNED_DOCUMENT",
+          "SIGNATURE_PROTOCOL"
+        ]
+      }
+    },
+    "SignatureLanguage": {
+      "title": "Signature Language",
+      "type": "string",
+      "description": "Determines in which language e-mails are sent to the user, if the user has not set their language preference yet.",
+      "enum": [
+        "en",
+        "de",
+        "fr",
+        "it"
+      ],
+      "default": "en"
+    },
+    "SignatureLegislation": {
+      "title": "Signature Legislation",
+      "type": "string",
+      "description": "Legislation under which the signatures are created. Required when `quality` is `QES` or `AES_MINIMAL`.\n\n| Legislation | Description |\n| --- | --- |\n| **ZERTES** | QES according to Swiss law. This is the **default**. |\n| **EIDAS** | QES according to EU law. |",
+      "enum": [
+        "ZERTES",
+        "EIDAS"
+      ]
+    },
+    "SignatureQuality": {
+      "title": "Signature Quality",
+      "type": "string",
+      "description": "Minimal quality of the signatures for this signature request.\n\n| Quality | Description |\n| --- | --- |\n| **QES** | Every signer must use QES. This is the **default** quality. Requires a `legislation` parameter. |\n| **AES_MINIMAL** | Signers will use QES if available, otherwise AES. At least AES is guaranteed. Requires a `legislation` parameter. |\n| **AES** | Every signer uses AES. |\n| **SES** | Every signer uses SES. |\n| **DEMO** | Every signer uses a DEMO signature with **no legal binding**. API demo users (`api_demo_example_*`) get this quality by default. |\n| **PART11** | Signers use a signature compliant with 21 CFR Part 11 regulations. |",
+      "enum": [
+        "SES",
+        "AES",
+        "AES_MINIMAL",
+        "QES",
+        "DEMO",
+        "PART11"
+      ]
+    },
+    "SignatureRecipient": {
+      "title": "Signature Recipient",
+      "type": "object",
+      "properties": {
+        "account_email": {
+          "type": "string",
+          "description": "Optional signer account email address.",
+          "format": "email"
+        },
+        "sequence": {
+          "type": "number",
+          "description": "Optional signing order for this signer, starting at `1`. If no sequence is supplied, signers can sign in any order. When a number is set, Skribble enforces an ascending signing order across all signers, based on their `sequence` values.",
+          "format": "int32",
+          "default": -1
+        },
+        "notify": {
+          "type": "boolean",
+          "description": "Whether to send a notification to this signer.",
+          "default": true
+        },
+        "language": {
+          "$ref": "#/$defs/SignatureLanguage"
+        },
+        "signer_identity_data": {
+          "$ref": "#/$defs/SignerIdentityData"
+        },
+        "visual_signature": {
+          "$ref": "#/$defs/VisualSignature"
+        }
+      }
+    },
+    "SignerIdentityData": {
+      "title": "Signer Identity Data",
+      "type": "object",
+      "description": "Optional (no-account) signer identity information.",
+      "properties": {
+        "email_address": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address of no-account-signer. Mandatory when `quality` is `SES`."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "First name of no-account-signer"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last name of no-account-signer"
+        },
+        "mobile_number": {
+          "type": "string",
+          "description": "Mobile number of the no-account-signer in E.164 format without the leading `+`:\ncountry code + area code + number, no spaces or special characters."
+        },
+        "language": {
+          "$ref": "#/$defs/SignatureLanguage"
+        },
+        "provider": {
+          "type": "string",
+          "description": "Evidence provider where Skribble can verify the signer's identity data."
+        },
+        "identity_reference": {
+          "type": "string",
+          "description": "Optional customer-generated identifier for further identification. When set together with `notify: false`,\nthe TAN-based email validation for No-Account-Signers (SES) is skipped, allowing signers to sign directly\nwithout the Skribble TAN process."
+        },
+        "identification_require_evidence": {
+          "type": "boolean",
+          "description": "(optional) if set, even if the signer is already identified, a new identification process is started to get fresh evidence records.\nOnly supported when the signature request's quality is `QES` and Express QES is enabled for the business;\notherwise the request fails with a validation error."
+        },
+        "force_standard_qes": {
+          "type": "boolean",
+          "description": "(optional) if set to `true`, this signer is always identified via the standard QES flow and is never routed\nthrough Express QES, regardless of the business's Express QES setting or other identity flags such as\n`identification_require_evidence`."
+        }
+      }
+    },
+    "VisualSignature": {
+      "description": "Visual signature placement information.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Single Position",
+          "description": "Use a single explicit position.",
+          "required": [
+            "position"
+          ],
+          "properties": {
+            "position": {
+              "$ref": "#/$defs/VisualSignaturePosition"
+            },
+            "image": {
+              "$ref": "#/$defs/VisualSignatureImage"
+            },
+            "positions": {
+              "description": "Must not be provided when position is used.",
+              "readOnly": true
+            },
+            "form_field": {
+              "description": "Must not be provided when position is used.",
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "title": "Multiple Positions",
+          "description": "Use multiple explicit positions.",
+          "required": [
+            "positions"
+          ],
+          "properties": {
+            "positions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/VisualSignaturePosition"
+              }
+            },
+            "image": {
+              "$ref": "#/$defs/VisualSignatureImage"
+            },
+            "position": {
+              "description": "Must not be provided when positions are used.",
+              "readOnly": true
+            },
+            "form_field": {
+              "description": "Must not be provided when positions are used.",
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "title": "Form Field",
+          "description": "Use a form field only.",
+          "required": [
+            "form_field"
+          ],
+          "properties": {
+            "form_field": {
+              "type": "string",
+              "description": "Name of the form field in which the signature is placed. If multiple fields of this name are present in the document, all will be used.\n"
+            },
+            "text": {
+              "type": "object",
+              "description": "Optional text to display inside the form field.",
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "description": "Content of the text field."
+                },
+                "font_name": {
+                  "type": "string",
+                  "description": "Font name to use. It is just a suggestion. For PDF: all default PDF fonts can be used or fonts which are already embedded in the document. If not specified, the default font of the form field will be used.\n"
+                },
+                "font_size": {
+                  "type": "string",
+                  "description": "Font size to use. If not specified, the default size for the form field will be used."
+                },
+                "font_color": {
+                  "type": "string",
+                  "description": "Font color to use as RGB value encoded in hex. Defaults to black (#000000)."
+                }
+              }
+            },
+            "image": {
+              "$ref": "#/$defs/VisualSignatureImage"
+            },
+            "position": {
+              "description": "Must not be provided when form_field is used.",
+              "readOnly": true
+            },
+            "positions": {
+              "description": "Must not be provided when form_field is used.",
+              "readOnly": true
+            }
+          }
+        }
+      ]
+    },
+    "VisualSignatureImage": {
+      "title": "Visual Signature Image",
+      "type": "object",
+      "description": "Visual signature image.",
+      "required": [
+        "content",
+        "content_type"
+      ],
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Base64 encoded bytes of content.",
+          "format": "byte"
+        },
+        "content_type": {
+          "type": "string",
+          "description": "Content type of bytes sent in content. At the moment this MUST be image/png"
+        },
+        "content_size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Size of `content` in bytes. Calculated by the server.",
+          "readOnly": true
+        }
+      }
+    },
+    "VisualSignaturePosition": {
+      "title": "Visual Signature Position",
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "string",
+          "description": "Page number (0-indexed) where the signature appears.\nThis is a String and not a number!"
+        },
+        "height": {
+          "type": "number",
+          "description": "Height of the signature in pixels."
+        },
+        "width": {
+          "type": "number",
+          "description": "Width of the signature in pixels."
+        },
+        "x": {
+          "type": "number",
+          "description": "X-coordinate (pixels from left) of signature."
+        },
+        "y": {
+          "type": "number",
+          "description": "Y-coordinate (pixels from top) of signature."
+        },
+        "rotation": {
+          "type": "number",
+          "description": "Defines a rotation of the field content. \nIf used in context with a form field, then only the values 0, 90, 180, 270 are legal.\nOtherwise every value is legal. The rotation is applied counter clockwise."
+        }
+      }
+    }
+  }
+}

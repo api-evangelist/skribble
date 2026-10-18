@@ -1,0 +1,691 @@
+{
+  "@context": {
+    "@vocab": "https://skribble.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "skribble": "https://skribble.com/schema#",
+    "LoginRequest": "skribble:LoginRequest",
+    "username": {
+      "@id": "skribble:username",
+      "@type": "xsd:string"
+    },
+    "api-key": {
+      "@id": "skribble:api-key",
+      "@type": "xsd:string"
+    },
+    "ProblemResponse": "skribble:ProblemResponse",
+    "type": {
+      "@id": "skribble:type",
+      "@type": "@id"
+    },
+    "method": {
+      "@id": "skribble:method",
+      "@type": "xsd:string"
+    },
+    "path": {
+      "@id": "skribble:path",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "skribble:status",
+      "@type": "xsd:integer"
+    },
+    "key": {
+      "@id": "skribble:key",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "skribble:message",
+      "@type": "xsd:string"
+    },
+    "SignatureStatusCode": "skribble:SignatureStatusCode",
+    "SignatureStatusOverall": "skribble:SignatureStatusOverall",
+    "SignatureLegislation": "skribble:SignatureLegislation",
+    "SignatureQuality": "skribble:SignatureQuality",
+    "SignatureLanguage": "skribble:SignatureLanguage",
+    "SignerIdentityDataResponse": "skribble:SignerIdentityDataResponse",
+    "email_address": {
+      "@id": "skribble:email_address",
+      "@type": "xsd:string"
+    },
+    "first_name": {
+      "@id": "skribble:first_name",
+      "@type": "xsd:string"
+    },
+    "last_name": {
+      "@id": "skribble:last_name",
+      "@type": "xsd:string"
+    },
+    "mobile_number": {
+      "@id": "skribble:mobile_number",
+      "@type": "xsd:string"
+    },
+    "language": {
+      "@id": "skribble:language",
+      "@type": "@id"
+    },
+    "identity_reference": {
+      "@id": "skribble:identity_reference",
+      "@type": "xsd:string"
+    },
+    "identification_require_evidence": {
+      "@id": "skribble:identification_require_evidence",
+      "@type": "xsd:boolean"
+    },
+    "force_standard_qes": {
+      "@id": "skribble:force_standard_qes",
+      "@type": "xsd:boolean"
+    },
+    "provider": {
+      "@id": "skribble:provider",
+      "@type": "xsd:string"
+    },
+    "evidence_id": {
+      "@id": "skribble:evidence_id",
+      "@type": "xsd:string"
+    },
+    "VisualSignatureImage": "skribble:VisualSignatureImage",
+    "content": {
+      "@id": "skribble:content",
+      "@type": "xsd:string"
+    },
+    "content_type": {
+      "@id": "skribble:content_type",
+      "@type": "xsd:string"
+    },
+    "content_size": {
+      "@id": "skribble:content_size",
+      "@type": "xsd:integer"
+    },
+    "VisualSignaturePosition": "skribble:VisualSignaturePosition",
+    "page": {
+      "@id": "skribble:page",
+      "@type": "xsd:string"
+    },
+    "height": {
+      "@id": "skribble:height",
+      "@type": "xsd:decimal"
+    },
+    "width": {
+      "@id": "skribble:width",
+      "@type": "xsd:decimal"
+    },
+    "x": {
+      "@id": "skribble:x",
+      "@type": "xsd:decimal"
+    },
+    "y": {
+      "@id": "skribble:y",
+      "@type": "xsd:decimal"
+    },
+    "rotation": {
+      "@id": "skribble:rotation",
+      "@type": "xsd:decimal"
+    },
+    "VisualSignatureResponse": "skribble:VisualSignatureResponse",
+    "image": {
+      "@id": "skribble:image",
+      "@type": "@id"
+    },
+    "position": {
+      "@id": "skribble:position",
+      "@type": "@id"
+    },
+    "positions": {
+      "@id": "skribble:positions",
+      "@container": "@list"
+    },
+    "form_field": {
+      "@id": "skribble:form_field",
+      "@type": "xsd:string"
+    },
+    "text": {
+      "@id": "skribble:text"
+    },
+    "SignatureRecipientResponse": "skribble:SignatureRecipientResponse",
+    "sid": {
+      "@id": "skribble:sid",
+      "@type": "xsd:string"
+    },
+    "status_code": {
+      "@id": "skribble:status_code",
+      "@type": "@id"
+    },
+    "account_email": {
+      "@id": "skribble:account_email",
+      "@type": "xsd:string"
+    },
+    "signer_identity_data": {
+      "@id": "skribble:signer_identity_data",
+      "@type": "@id"
+    },
+    "sequence": {
+      "@id": "skribble:sequence",
+      "@type": "xsd:integer"
+    },
+    "notify": {
+      "@id": "skribble:notify",
+      "@type": "xsd:boolean"
+    },
+    "signing_url": {
+      "@id": "skribble:signing_url",
+      "@type": "@id"
+    },
+    "decline_message": {
+      "@id": "skribble:decline_message",
+      "@type": "xsd:string"
+    },
+    "signed_at": {
+      "@id": "skribble:signed_at",
+      "@type": "xsd:dateTime"
+    },
+    "signed_legislation": {
+      "@id": "skribble:signed_legislation",
+      "@type": "@id"
+    },
+    "signed_quality": {
+      "@id": "skribble:signed_quality",
+      "@type": "@id"
+    },
+    "last_viewed_at": {
+      "@id": "skribble:last_viewed_at",
+      "@type": "xsd:dateTime"
+    },
+    "visual_signature": {
+      "@id": "skribble:visual_signature",
+      "@type": "@id"
+    },
+    "SignatureAttachment": "skribble:SignatureAttachment",
+    "attachment_id": {
+      "@id": "skribble:attachment_id",
+      "@type": "xsd:string"
+    },
+    "filename": {
+      "@id": "skribble:filename",
+      "@type": "xsd:string"
+    },
+    "SignatureResponse": "skribble:SignatureResponse",
+    "id": {
+      "@id": "skribble:id",
+      "@type": "xsd:string"
+    },
+    "title": {
+      "@id": "skribble:title",
+      "@type": "xsd:string"
+    },
+    "document_id": {
+      "@id": "skribble:document_id",
+      "@type": "xsd:string"
+    },
+    "legislation": {
+      "@id": "skribble:legislation",
+      "@type": "@id"
+    },
+    "quality": {
+      "@id": "skribble:quality",
+      "@type": "@id"
+    },
+    "status_overall": {
+      "@id": "skribble:status_overall",
+      "@type": "@id"
+    },
+    "business": {
+      "@id": "skribble:business",
+      "@type": "xsd:string"
+    },
+    "signatures": {
+      "@id": "skribble:signatures",
+      "@container": "@list"
+    },
+    "cc_email_addresses": {
+      "@id": "skribble:cc_email_addresses",
+      "@container": "@list"
+    },
+    "auto_delete_at": {
+      "@id": "skribble:auto_delete_at",
+      "@type": "xsd:date"
+    },
+    "expires_at": {
+      "@id": "skribble:expires_at",
+      "@type": "xsd:date"
+    },
+    "attachments": {
+      "@id": "skribble:attachments",
+      "@container": "@list"
+    },
+    "attach_on_success": {
+      "@id": "skribble:attach_on_success",
+      "@type": "@id"
+    },
+    "custom": {
+      "@id": "skribble:custom",
+      "@type": "xsd:string"
+    },
+    "owner": {
+      "@id": "skribble:owner",
+      "@type": "xsd:string"
+    },
+    "read_access": {
+      "@id": "skribble:read_access",
+      "@container": "@list"
+    },
+    "write_access": {
+      "@id": "skribble:write_access",
+      "@container": "@list"
+    },
+    "created_at": {
+      "@id": "skribble:created_at",
+      "@type": "xsd:dateTime"
+    },
+    "updated_at": {
+      "@id": "skribble:updated_at",
+      "@type": "xsd:dateTime"
+    },
+    "callback_success_url": {
+      "@id": "skribble:callback_success_url",
+      "@type": "@id"
+    },
+    "callback_error_url": {
+      "@id": "skribble:callback_error_url",
+      "@type": "@id"
+    },
+    "callback_update_url": {
+      "@id": "skribble:callback_update_url",
+      "@type": "@id"
+    },
+    "callback_start_sign_url": {
+      "@id": "skribble:callback_start_sign_url",
+      "@type": "@id"
+    },
+    "callback_ident_pending_url": {
+      "@id": "skribble:callback_ident_pending_url",
+      "@type": "@id"
+    },
+    "callback_ident_error_url": {
+      "@id": "skribble:callback_ident_error_url",
+      "@type": "@id"
+    },
+    "SignerIdentityData": "skribble:SignerIdentityData",
+    "SignatureRecipient": "skribble:SignatureRecipient",
+    "UpdateSignatureRequest": "skribble:UpdateSignatureRequest",
+    "CreateSignatureRequestBase": "skribble:CreateSignatureRequestBase",
+    "creator": {
+      "@id": "skribble:creator",
+      "@type": "xsd:string"
+    },
+    "WithdrawSignatureRequest": "skribble:WithdrawSignatureRequest",
+    "SignatureReport": "skribble:SignatureReport",
+    "header": {
+      "@id": "skribble:header"
+    },
+    "userList": {
+      "@id": "skribble:userList",
+      "@container": "@list"
+    },
+    "error": {
+      "@id": "skribble:error"
+    },
+    "CallbackType": "skribble:CallbackType",
+    "CallbackState": "skribble:CallbackState",
+    "CreateSignatureAttachmentRequest": "skribble:CreateSignatureAttachmentRequest",
+    "IdentificationEvidenceStatusResponse": "skribble:IdentificationEvidenceStatusResponse",
+    "transactionCode": {
+      "@id": "skribble:transactionCode",
+      "@type": "xsd:string"
+    },
+    "accountId": {
+      "@id": "skribble:accountId",
+      "@type": "xsd:integer"
+    },
+    "workflowId": {
+      "@id": "skribble:workflowId",
+      "@type": "xsd:integer"
+    },
+    "pendingReview": {
+      "@id": "skribble:pendingReview"
+    },
+    "createdAt": {
+      "@id": "skribble:createdAt",
+      "@type": "xsd:dateTime"
+    },
+    "expiresAt": {
+      "@id": "skribble:expiresAt",
+      "@type": "xsd:dateTime"
+    },
+    "startedAt": {
+      "@id": "skribble:startedAt",
+      "@type": "xsd:dateTime"
+    },
+    "completedAt": {
+      "@id": "skribble:completedAt"
+    },
+    "reviewedAt": {
+      "@id": "skribble:reviewedAt"
+    },
+    "CreateSealRequest": "skribble:CreateSealRequest",
+    "account_name": {
+      "@id": "skribble:account_name",
+      "@type": "xsd:string"
+    },
+    "CreateSealResponse": "skribble:CreateSealResponse",
+    "SignatureFormFieldPosition": "skribble:SignatureFormFieldPosition",
+    "SignatureFormField": "skribble:SignatureFormField",
+    "name": {
+      "@id": "skribble:name",
+      "@type": "xsd:string"
+    },
+    "signed": {
+      "@id": "skribble:signed",
+      "@type": "xsd:boolean"
+    },
+    "DocumentResponse": "skribble:DocumentResponse",
+    "parent_id": {
+      "@id": "skribble:parent_id",
+      "@type": "xsd:string"
+    },
+    "size": {
+      "@id": "skribble:size",
+      "@type": "xsd:integer"
+    },
+    "page_count": {
+      "@id": "skribble:page_count",
+      "@type": "xsd:integer"
+    },
+    "page_width": {
+      "@id": "skribble:page_width",
+      "@type": "xsd:integer"
+    },
+    "page_height": {
+      "@id": "skribble:page_height",
+      "@type": "xsd:integer"
+    },
+    "signature_fields": {
+      "@id": "skribble:signature_fields",
+      "@container": "@list"
+    },
+    "DocumentContentResponse": "skribble:DocumentContentResponse",
+    "CreateSendToRequest": "skribble:CreateSendToRequest",
+    "CreateSendToResponse": "skribble:CreateSendToResponse",
+    "url": {
+      "@id": "skribble:url",
+      "@type": "@id"
+    },
+    "access_code": {
+      "@id": "skribble:access_code",
+      "@type": "xsd:string"
+    },
+    "TrackSendToResponse": "skribble:TrackSendToResponse",
+    "signers": {
+      "@id": "skribble:signers"
+    },
+    "UserSignatureQualitiesResponse": "skribble:UserSignatureQualitiesResponse",
+    "qes": {
+      "@id": "skribble:qes"
+    },
+    "aes_minimal": {
+      "@id": "skribble:aes_minimal"
+    },
+    "aes": {
+      "@id": "skribble:aes"
+    },
+    "ses": {
+      "@id": "skribble:ses"
+    },
+    "ActivitiesSignaturesUser": "skribble:ActivitiesSignaturesUser",
+    "email": {
+      "@id": "skribble:email",
+      "@type": "xsd:string"
+    },
+    "mobile": {
+      "@id": "skribble:mobile",
+      "@type": "xsd:string"
+    },
+    "ActivitiesSignaturesEntry": "skribble:ActivitiesSignaturesEntry",
+    "_id": {
+      "@id": "skribble:_id",
+      "@type": "xsd:string"
+    },
+    "action": {
+      "@id": "skribble:action",
+      "@type": "xsd:string"
+    },
+    "timestamp": {
+      "@id": "skribble:timestamp",
+      "@type": "xsd:dateTime"
+    },
+    "signature_request_id": {
+      "@id": "skribble:signature_request_id",
+      "@type": "xsd:string"
+    },
+    "cost_center": {
+      "@id": "skribble:cost_center"
+    },
+    "initiator": {
+      "@id": "skribble:initiator",
+      "@type": "@id"
+    },
+    "signer": {
+      "@id": "skribble:signer",
+      "@type": "@id"
+    },
+    "ActivitiesSignaturesResponse": "skribble:ActivitiesSignaturesResponse",
+    "total_pages": {
+      "@id": "skribble:total_pages",
+      "@type": "xsd:integer"
+    },
+    "total_items": {
+      "@id": "skribble:total_items",
+      "@type": "xsd:integer"
+    },
+    "current_page": {
+      "@id": "skribble:current_page",
+      "@type": "xsd:integer"
+    },
+    "activities": {
+      "@id": "skribble:activities",
+      "@container": "@list"
+    },
+    "SystemHealthResponse": "skribble:SystemHealthResponse",
+    "groups": {
+      "@id": "skribble:groups",
+      "@container": "@list"
+    },
+    "SignatureStatusCode_v3": "skribble:SignatureStatusCode_v3",
+    "SignatureStatusOverall_v3": "skribble:SignatureStatusOverall_v3",
+    "DocumentInSignatureResponse": "skribble:DocumentInSignatureResponse",
+    "version_id": {
+      "@id": "skribble:version_id",
+      "@type": "xsd:string"
+    },
+    "SignatureDocument": "skribble:SignatureDocument",
+    "SignatureRecipientResponse_v3": "skribble:SignatureRecipientResponse_v3",
+    "document_signatures": {
+      "@id": "skribble:document_signatures",
+      "@container": "@list"
+    },
+    "invited_by": {
+      "@id": "skribble:invited_by",
+      "@type": "xsd:string"
+    },
+    "UserObserverResponse": "skribble:UserObserverResponse",
+    "invited_at": {
+      "@id": "skribble:invited_at",
+      "@type": "xsd:dateTime"
+    },
+    "user_info": {
+      "@id": "skribble:user_info"
+    },
+    "GroupObserverResponse": "skribble:GroupObserverResponse",
+    "group_info": {
+      "@id": "skribble:group_info"
+    },
+    "SignatureResponse_v3": "skribble:SignatureResponse_v3",
+    "documents": {
+      "@id": "skribble:documents",
+      "@container": "@list"
+    },
+    "business_id": {
+      "@id": "skribble:business_id",
+      "@type": "xsd:string"
+    },
+    "origin": {
+      "@id": "skribble:origin",
+      "@type": "xsd:string"
+    },
+    "observers": {
+      "@id": "skribble:observers",
+      "@container": "@list"
+    },
+    "initiated_at": {
+      "@id": "skribble:initiated_at",
+      "@type": "xsd:dateTime"
+    },
+    "DocumentInSignature": "skribble:DocumentInSignature",
+    "CreateSignatureRequest": "skribble:CreateSignatureRequest",
+    "CallbackType_v3": "skribble:CallbackType_v3",
+    "UploadDocumentInSignature": "skribble:UploadDocumentInSignature",
+    "CreateSignatureObserverRequest": "skribble:CreateSignatureObserverRequest",
+    "SignerCertificate": "skribble:SignerCertificate",
+    "subject": {
+      "@id": "skribble:subject",
+      "@type": "xsd:string"
+    },
+    "issuer": {
+      "@id": "skribble:issuer",
+      "@type": "xsd:string"
+    },
+    "serialNumber": {
+      "@id": "skribble:serialNumber",
+      "@type": "xsd:string"
+    },
+    "OptionalSignerInfos": "skribble:OptionalSignerInfos",
+    "contact": {
+      "@id": "skribble:contact",
+      "@type": "xsd:string"
+    },
+    "location": {
+      "@id": "skribble:location",
+      "@type": "xsd:string"
+    },
+    "reason": {
+      "@id": "skribble:reason",
+      "@type": "xsd:string"
+    },
+    "Signer": "skribble:Signer",
+    "valid": {
+      "@id": "skribble:valid",
+      "@type": "xsd:boolean"
+    },
+    "time": {
+      "@id": "skribble:time",
+      "@type": "xsd:dateTime"
+    },
+    "longTermValidation": {
+      "@id": "skribble:longTermValidation",
+      "@type": "xsd:boolean"
+    },
+    "visualDifferences": {
+      "@id": "skribble:visualDifferences",
+      "@type": "xsd:boolean"
+    },
+    "undefinedChanges": {
+      "@id": "skribble:undefinedChanges",
+      "@type": "xsd:boolean"
+    },
+    "certificate": {
+      "@id": "skribble:certificate",
+      "@type": "@id"
+    },
+    "optionalInfos": {
+      "@id": "skribble:optionalInfos",
+      "@type": "@id"
+    },
+    "FormatInfosResponse": "skribble:FormatInfosResponse",
+    "fileType": {
+      "@id": "skribble:fileType",
+      "@type": "xsd:string"
+    },
+    "producer": {
+      "@id": "skribble:producer",
+      "@type": "xsd:string"
+    },
+    "ValidationInfosResponse": "skribble:ValidationInfosResponse",
+    "indication": {
+      "@id": "skribble:indication",
+      "@type": "xsd:string"
+    },
+    "subIndication": {
+      "@id": "skribble:subIndication",
+      "@type": "xsd:string"
+    },
+    "details": {
+      "@id": "skribble:details",
+      "@container": "@list"
+    },
+    "OptionalValidationInfos": "skribble:OptionalValidationInfos",
+    "format": {
+      "@id": "skribble:format",
+      "@type": "@id"
+    },
+    "validation": {
+      "@id": "skribble:validation",
+      "@type": "@id"
+    },
+    "DocumentValidationResponse": "skribble:DocumentValidationResponse",
+    "validSignatures": {
+      "@id": "skribble:validSignatures",
+      "@type": "xsd:integer"
+    },
+    "additionalInfos": {
+      "@id": "skribble:additionalInfos",
+      "@type": "@id"
+    },
+    "SignatureValidationResponse": "skribble:SignatureValidationResponse",
+    "CreditInfo": "skribble:CreditInfo",
+    "sku": {
+      "@id": "skribble:sku",
+      "@type": "xsd:string"
+    },
+    "endpoint": {
+      "@id": "skribble:endpoint",
+      "@type": "xsd:string"
+    },
+    "credits": {
+      "@id": "skribble:credits",
+      "@type": "xsd:integer"
+    },
+    "BillingCreditInfos": "skribble:BillingCreditInfos",
+    "validFrom": {
+      "@id": "skribble:validFrom",
+      "@type": "xsd:dateTime"
+    },
+    "consumptions": {
+      "@id": "skribble:consumptions",
+      "@container": "@list"
+    },
+    "CreditUsage": "skribble:CreditUsage",
+    "requests": {
+      "@id": "skribble:requests",
+      "@type": "xsd:integer"
+    },
+    "BillingCreditUsage": "skribble:BillingCreditUsage",
+    "period": {
+      "@id": "skribble:period",
+      "@type": "xsd:string"
+    },
+    "usage": {
+      "@id": "skribble:usage",
+      "@container": "@list"
+    }
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Skribble API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Skribble's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-18) from openapi/skribble-sign-v2-openapi.yml, openapi/skribble-sign-v3-openapi.yml, openapi/skribble-validation-v1-openapi.yml.",
+  "dcterms:created": "2026-10-18",
+  "dcterms:source": [
+    "openapi/skribble-sign-v2-openapi.yml",
+    "openapi/skribble-sign-v3-openapi.yml",
+    "openapi/skribble-validation-v1-openapi.yml"
+  ]
+}

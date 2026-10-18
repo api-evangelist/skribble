@@ -1,0 +1,636 @@
+generated: '2026-10-18'
+method: derived
+status: candidate
+source: 'Derived from the operations in openapi/skribble-sign-v2-openapi.yml, openapi/skribble-sign-v3-openapi.yml, openapi/skribble-validation-v1-openapi.yml. No official Skribble MCP server found: https://api.docs.skribble.com/llms.txt
+  and llms-full.txt (200) contain no MCP mention; https://api.docs.skribble.com/mcp and /.well-known/mcp.json returned 404; mcp.skribble.com did not resolve; web search returned only a third-party Zapier
+  listing.'
+deployment:
+  mode: none
+  auth: unknown
+  verified: derived
+third_party:
+- name: Zapier MCP for Skribble
+  url: https://zapier.com/mcp/skribble
+  official: false
+  note: Zapier-hosted action bridge; not published by Skribble. Found via web search, not probed.
+auth:
+  note: Underlying REST APIs use a bearer JWT obtained from POST /access/login (username + API key); tokens last ~20 minutes per https://api.docs.skribble.com/limits.
+tool_count: 88
+tools:
+- name: sign_v2_accessLogin
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: accessLogin
+  method: POST
+  path: /access/login
+  category: Access
+  description: Authenticate and Obtain an Access Token
+- name: sign_v2_createSignatureRequest
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: createSignatureRequest
+  method: POST
+  path: /signature-requests
+  category: Signature
+  description: Create a Signature Request
+- name: sign_v2_getSignatureRequest
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getSignatureRequest
+  method: GET
+  path: /signature-requests
+  category: Signature Handling
+  description: List and find Signature Requests
+- name: sign_v2_updateSignatureRequest
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: updateSignatureRequest
+  method: PUT
+  path: /signature-requests
+  category: Signature Handling
+  description: Update a Signature Request
+- name: sign_v2_bulkGetSignatureRequests
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: bulkGetSignatureRequests
+  method: POST
+  path: /signature-requests/bulk
+  category: Signature Handling
+  description: List Signature Requests by bulk
+- name: sign_v2_getSignatureRequestDetails
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getSignatureRequestDetails
+  method: GET
+  path: /signature-requests/{SR_ID}
+  category: Signature
+  description: Get a Signature Request
+- name: sign_v2_deleteSignatureRequest
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: deleteSignatureRequest
+  method: DELETE
+  path: /signature-requests/{SR_ID}
+  category: Signature
+  description: Delete a Signature Request
+- name: sign_v2_withdrawSignatureRequest
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: withdrawSignatureRequest
+  method: POST
+  path: /signature-requests/{SR_ID}/withdraw
+  category: Signature
+  description: Withdraw a Signature Request
+- name: sign_v2_remindSignatureRequest
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: remindSignatureRequest
+  method: POST
+  path: /signature-requests/{SR_ID}/remind
+  category: Signature Handling
+  description: Remind Open Signers of a Signature Request
+- name: sign_v2_getSignatureReport
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getSignatureReport
+  method: GET
+  path: /signature-requests/{SR_ID}/report
+  category: Signature Handling
+  description: Get Signature Request Report
+- name: sign_v2_getSignatureRequestCallbacks
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getSignatureRequestCallbacks
+  method: GET
+  path: /signature-requests/{SR_ID}/callbacks
+  category: Signature Handling
+  description: Get callback details for a signature request
+- name: sign_v2_createSignatureAttachment
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: createSignatureAttachment
+  method: POST
+  path: /signature-requests/{SR_ID}/attachments
+  category: Signature Attachment
+  description: Add an attachment to a signature request
+- name: sign_v2_getSignatureAttachmentContent
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getSignatureAttachmentContent
+  method: GET
+  path: /signature-requests/{SR_ID}/attachments/{ATTACHMENT_ID}/content
+  category: Signature Attachment
+  description: Get Signature Attachment content
+- name: sign_v2_deleteSignatureAttachment
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: deleteSignatureAttachment
+  method: DELETE
+  path: /signature-requests/{SR_ID}/attachments/{ATTACHMENT_ID}
+  category: Signature Attachment
+  description: Remove an attachment from a signature request
+- name: sign_v2_addSignatureSigner
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: addSignatureSigner
+  method: POST
+  path: /signature-requests/{SR_ID}/signatures
+  category: Signature Signer
+  description: Add an individual signer
+- name: sign_v2_removeSignatureSigner
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: removeSignatureSigner
+  method: DELETE
+  path: /signature-requests/{SR_ID}/signatures/{SID}
+  category: Signature Signer
+  description: Remove an individual signer
+- name: sign_v2_getIdentificationEvidenceStatus
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getIdentificationEvidenceStatus
+  method: GET
+  path: /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/status
+  category: Identification
+  description: Get Identification Evidence Status
+- name: sign_v2_getIdentificationEvidenceJSON
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getIdentificationEvidenceJSON
+  method: GET
+  path: /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}
+  category: Identification
+  description: Get Identification Evidence JSON
+- name: sign_v2_getIdentificationEvidenceFiles
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getIdentificationEvidenceFiles
+  method: GET
+  path: /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/files
+  category: Identification
+  description: Get Identification Evidence Files
+- name: sign_v2_getIdentificationEvidenceJWT
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getIdentificationEvidenceJWT
+  method: GET
+  path: /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/jwt
+  category: Identification
+  description: Get Identification Evidence JWT
+- name: sign_v2_sealDocument
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: sealDocument
+  method: POST
+  path: /seal
+  category: Seal
+  description: Seal a Document with a Legal Entity Signature
+- name: sign_v2_uploadDocument
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: uploadDocument
+  method: POST
+  path: /documents
+  category: Document
+  description: Upload a Document
+- name: sign_v2_getDocuments
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getDocuments
+  method: GET
+  path: /documents
+  category: Document
+  description: List All Accessible Documents
+- name: sign_v2_getDocumentMetadata
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getDocumentMetadata
+  method: GET
+  path: /documents/{DOC_ID}
+  category: Document
+  description: Get Document Metadata
+- name: sign_v2_deleteDocument
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: deleteDocument
+  method: DELETE
+  path: /documents/{DOC_ID}
+  category: Document
+  description: Delete a Document
+- name: sign_v2_getDocumentContent
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getDocumentContent
+  method: GET
+  path: /documents/{DOC_ID}/content
+  category: Document
+  description: Get Document Content
+- name: sign_v2_getDocumentPreview
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getDocumentPreview
+  method: GET
+  path: /documents/{DOC_ID}/pages/{PAGE_ID}
+  category: Document
+  description: Get Document Page Preview
+- name: sign_v2_createSendTo
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: createSendTo
+  method: POST
+  path: /sendto
+  category: SendTo
+  description: Create a Send-To Request
+- name: sign_v2_trackSendTo
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: trackSendTo
+  method: GET
+  path: /sendto/{SEND_TO_ID}/track
+  category: SendTo
+  description: Track a Send-To Request
+- name: sign_v2_downloadSendTo
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: downloadSendTo
+  method: GET
+  path: /sendto/{SEND_TO_ID}/download
+  category: SendTo
+  description: Download Send-To Document
+- name: sign_v2_deleteSendTo
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: deleteSendTo
+  method: DELETE
+  path: /sendto/{SEND_TO_ID}
+  category: SendTo
+  description: Delete a Send-To Request
+- name: sign_v2_getUserSignatureQualities
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getUserSignatureQualities
+  method: GET
+  path: /user/signature-qualities
+  category: User
+  description: Get Signature Quality Details for a User
+- name: sign_v2_getActivitiesSignaturesByBusiness
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getActivitiesSignaturesByBusiness
+  method: GET
+  path: /activities/signatures
+  category: Report
+  description: Get signature activities by business
+- name: sign_v2_getSystemHealth
+  api: openapi/skribble-sign-v2-openapi.yml
+  operationId: getSystemHealth
+  method: GET
+  path: /management/health
+  category: Monitoring
+  description: System Health
+- name: sign_v3_accessLogin
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: accessLogin
+  method: POST
+  path: /access/login
+  category: Access
+  description: Authenticate and Obtain an Access Token
+- name: sign_v3_createSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: createSignatureRequest
+  method: POST
+  path: /signature-requests
+  category: Signature
+  description: Create a Signature Request
+- name: sign_v3_getSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getSignatureRequest
+  method: GET
+  path: /signature-requests
+  category: Signature Handling
+  description: List and find Signature Requests
+- name: sign_v3_updateSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: updateSignatureRequest
+  method: PUT
+  path: /signature-requests
+  category: Signature Handling
+  description: Update a Signature Request
+- name: sign_v3_bulkGetSignatureRequests
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: bulkGetSignatureRequests
+  method: POST
+  path: /signature-requests/bulk
+  category: Signature Handling
+  description: List Signature Requests by bulk
+- name: sign_v3_initiateSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: initiateSignatureRequest
+  method: POST
+  path: /signature-requests/{SR_ID}/initiate
+  category: Signature
+  description: Invite signers and start signing process
+- name: sign_v3_getSignatureRequestDetails
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getSignatureRequestDetails
+  method: GET
+  path: /signature-requests/{SR_ID}
+  category: Signature
+  description: Get a Signature Request
+- name: sign_v3_deleteSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: deleteSignatureRequest
+  method: DELETE
+  path: /signature-requests/{SR_ID}
+  category: Signature
+  description: Delete a Signature Request
+- name: sign_v3_withdrawSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: withdrawSignatureRequest
+  method: POST
+  path: /signature-requests/{SR_ID}/withdraw
+  category: Signature
+  description: Withdraw a Signature Request
+- name: sign_v3_remindSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: remindSignatureRequest
+  method: POST
+  path: /signature-requests/{SR_ID}/remind
+  category: Signature Handling
+  description: Remind Open Signers of a Signature Request
+- name: sign_v3_deleteSignatureRequestExpiresAt
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: deleteSignatureRequestExpiresAt
+  method: DELETE
+  path: /signature-requests/{SR_ID}/expires-at
+  category: Signature Handling
+  description: Clear the expiry date of a Signature Request
+- name: sign_v3_getSignatureReport
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getSignatureReport
+  method: GET
+  path: /signature-requests/{SR_ID}/report
+  category: Signature Handling
+  description: Get Signature Request Report
+- name: sign_v3_getSignatureRequestCallbacks_v3
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getSignatureRequestCallbacks_v3
+  method: GET
+  path: /signature-requests/{SR_ID}/callbacks
+  category: Signature Handling
+  description: Get callback details for a signature request
+- name: sign_v3_createSignatureAttachment
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: createSignatureAttachment
+  method: POST
+  path: /signature-requests/{SR_ID}/attachments
+  category: Signature Attachment
+  description: Add an attachment to a signature request
+- name: sign_v3_getSignatureAttachmentContent
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getSignatureAttachmentContent
+  method: GET
+  path: /signature-requests/{SR_ID}/attachments/{ATTACHMENT_ID}/content
+  category: Signature Attachment
+  description: Get Signature Attachment content
+- name: sign_v3_deleteSignatureAttachment
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: deleteSignatureAttachment
+  method: DELETE
+  path: /signature-requests/{SR_ID}/attachments/{ATTACHMENT_ID}
+  category: Signature Attachment
+  description: Remove an attachment from a signature request
+- name: sign_v3_addSignatureSigner
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: addSignatureSigner
+  method: POST
+  path: /signature-requests/{SR_ID}/signatures
+  category: Signature Signer
+  description: Add an individual signer
+- name: sign_v3_removeSignatureSigner
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: removeSignatureSigner
+  method: DELETE
+  path: /signature-requests/{SR_ID}/signatures/{SID}
+  category: Signature Signer
+  description: Remove an individual signer
+- name: sign_v3_getIdentificationEvidenceStatus
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getIdentificationEvidenceStatus
+  method: GET
+  path: /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/status
+  category: Identification
+  description: Get Identification Evidence Status
+- name: sign_v3_getIdentificationEvidenceJSON
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getIdentificationEvidenceJSON
+  method: GET
+  path: /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}
+  category: Identification
+  description: Get Identification Evidence JSON
+- name: sign_v3_getIdentificationEvidenceFiles
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getIdentificationEvidenceFiles
+  method: GET
+  path: /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/files
+  category: Identification
+  description: Get Identification Evidence Files
+- name: sign_v3_getIdentificationEvidenceJWT
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getIdentificationEvidenceJWT
+  method: GET
+  path: /signature-requests/{SR_ID}/identification_evidence/{EVIDENCE_ID}/jwt
+  category: Identification
+  description: Get Identification Evidence JWT
+- name: sign_v3_addDocumentInSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: addDocumentInSignatureRequest
+  method: POST
+  path: /signature-requests/{SR_ID}/documents
+  category: Signature
+  description: Add an additional document
+- name: sign_v3_deleteDocumentInSignatureRequest
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: deleteDocumentInSignatureRequest
+  method: DELETE
+  path: /signature-requests/{SR_ID}/documents/{DOC_ID}
+  category: Signature
+  description: Remove a document
+- name: sign_v3_addSignatureObserver
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: addSignatureObserver
+  method: POST
+  path: /signature-requests/{SR_ID}/observers
+  category: Signature Observer
+  description: Add an observer to a signature request
+- name: sign_v3_listSignatureObservers
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: listSignatureObservers
+  method: GET
+  path: /signature-requests/{SR_ID}/observers
+  category: Signature Observer
+  description: List observers of a signature request
+- name: sign_v3_getSignatureObserver
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getSignatureObserver
+  method: GET
+  path: /signature-requests/{SR_ID}/observers/{OBSERVER_ID}
+  category: Signature Observer
+  description: Get an observer of a signature request
+- name: sign_v3_deleteSignatureObserver
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: deleteSignatureObserver
+  method: DELETE
+  path: /signature-requests/{SR_ID}/observers/{OBSERVER_ID}
+  category: Signature Observer
+  description: Remove an observer from a signature request
+- name: sign_v3_sealDocument
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: sealDocument
+  method: POST
+  path: /seal
+  category: Seal
+  description: Seal a Document with a Legal Entity Signature
+- name: sign_v3_uploadDocument
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: uploadDocument
+  method: POST
+  path: /documents
+  category: Document
+  description: Upload a Document
+- name: sign_v3_getDocuments
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getDocuments
+  method: GET
+  path: /documents
+  category: Document
+  description: List All Accessible Documents
+- name: sign_v3_getDocumentMetadata
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getDocumentMetadata
+  method: GET
+  path: /documents/{DOC_ID}
+  category: Document
+  description: Get Document Metadata
+- name: sign_v3_deleteDocument
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: deleteDocument
+  method: DELETE
+  path: /documents/{DOC_ID}
+  category: Document
+  description: Delete a Document
+- name: sign_v3_getDocumentContent
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getDocumentContent
+  method: GET
+  path: /documents/{DOC_ID}/content
+  category: Document
+  description: Get Document Content
+- name: sign_v3_getDocumentPreview
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getDocumentPreview
+  method: GET
+  path: /documents/{DOC_ID}/pages/{PAGE_ID}
+  category: Document
+  description: Get Document Page Preview
+- name: sign_v3_createSendTo
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: createSendTo
+  method: POST
+  path: /sendto
+  category: SendTo
+  description: Create a Send-To Request
+- name: sign_v3_trackSendTo
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: trackSendTo
+  method: GET
+  path: /sendto/{SEND_TO_ID}/track
+  category: SendTo
+  description: Track a Send-To Request
+- name: sign_v3_downloadSendTo
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: downloadSendTo
+  method: GET
+  path: /sendto/{SEND_TO_ID}/download
+  category: SendTo
+  description: Download Send-To Document
+- name: sign_v3_deleteSendTo
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: deleteSendTo
+  method: DELETE
+  path: /sendto/{SEND_TO_ID}
+  category: SendTo
+  description: Delete a Send-To Request
+- name: sign_v3_getUserSignatureQualities
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getUserSignatureQualities
+  method: GET
+  path: /user/signature-qualities
+  category: User
+  description: Get Signature Quality Details for a User
+- name: sign_v3_getActivitiesSignaturesByBusiness
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getActivitiesSignaturesByBusiness
+  method: GET
+  path: /activities/signatures
+  category: Report
+  description: Get signature activities by business
+- name: sign_v3_getSystemHealth
+  api: openapi/skribble-sign-v3-openapi.yml
+  operationId: getSystemHealth
+  method: GET
+  path: /management/health
+  category: Monitoring
+  description: System Health
+- name: validation_v1_postAccessLogin
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: postAccessLogin
+  method: POST
+  path: /access/login
+  category: Access
+  description: Sign in with username and API key to receive a JWT access token
+- name: validation_v1_postValidateDocument
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: postValidateDocument
+  method: POST
+  path: /validate/document
+  category: Validation
+  description: Validate a digitally signed content
+- name: validation_v1_postValidateSignature
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: postValidateSignature
+  method: POST
+  path: /validate/signature
+  category: Validation
+  description: Validate a digital signature
+- name: validation_v1_deleteValidation
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: deleteValidation
+  method: DELETE
+  path: /validate/{id}
+  category: Validation
+  description: Deletes the validation
+- name: validation_v1_getInfosValidation
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: getInfosValidation
+  method: GET
+  path: /infos/{id}/validation
+  category: Additional Information
+  description: Get additional information about the validation itself. Refer to ETSI EN 319 102-1 for the indications and sub-indications that may be encountered.
+- name: validation_v1_getInfosSigners
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: getInfosSigners
+  method: GET
+  path: /infos/{id}/signers
+  category: Additional Information
+  description: Get additional information about the signers of a validation
+- name: validation_v1_getInfosFormat
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: getInfosFormat
+  method: GET
+  path: /infos/{id}/format
+  category: Additional Information
+  description: Get additional information about the document format
+- name: validation_v1_getSkribbleReport
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: getSkribbleReport
+  method: GET
+  path: /reports/{id}/skribble
+  category: Reports
+  description: Skribble validation report
+- name: validation_v1_getReportsETSI
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: getReportsETSI
+  method: GET
+  path: /reports/{id}/etsi
+  category: Reports
+  description: ETSI TS 119 102-2 validation report
+- name: validation_v1_getBillingCreditsInfos
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: getBillingCreditsInfos
+  method: GET
+  path: /billing/credits/infos
+  category: Billing and Credits
+  description: Credits information
+- name: validation_v1_getBillingCreditsUsage
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: getBillingCreditsUsage
+  method: GET
+  path: /billing/credits/usage
+  category: Billing and Credits
+  description: Current credit usage
+- name: validation_v1_getBillingCreditsInvoiced
+  api: openapi/skribble-validation-v1-openapi.yml
+  operationId: getBillingCreditsInvoiced
+  method: GET
+  path: /billing/credits/invoiced
+  category: Billing and Credits
+  description: Invoiced credit details
+notes: Candidate tool list only. Each tool maps 1:1 to a REST operation; no server exists, so no endpoint or install is recorded.

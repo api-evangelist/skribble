@@ -1,0 +1,92 @@
+generated: '2026-10-18'
+method: searched
+probe: true
+source:
+  - https://www.skribble.com/en-eu/privacy/
+  - https://www.skribble.com/en-eu/dpa/
+  - https://www.skribble.com/en-eu/security/
+  - https://www.skribble.com/en-eu/terms-of-use/
+probes:
+  - {url: https://www.skribble.com/en-eu/privacy/, http_status: 200}
+  - {url: https://www.skribble.com/en-eu/dpa/, http_status: 200}
+  - {url: https://www.skribble.com/en-eu/security/, http_status: 200}
+  - {url: https://www.skribble.com/en-eu/terms-of-use/, http_status: 200}
+  - {url: https://www.skribble.com/en-eu/accessibility/, http_status: 404}
+  - {url: https://www.skribble.com/en-eu/subprocessors/, http_status: 404}
+  - {url: https://www.skribble.com/en-eu/trust/, http_status: 404}
+  - {url: https://www.skribble.com/en-eu/legal/, http_status: 404}
+  - {url: https://www.skribble.com/en-eu/data-processing-agreement/, http_status: 404}
+  - {url: https://www.skribble.com/en-eu/ai/, http_status: 404}
+signals:
+  data_subject_request:
+    url: https://www.skribble.com/en-eu/privacy/
+    section: 7. Data subjects rights
+    note: Privacy policy lists access, rectification, erasure, portability, objection and revocation rights, exercised by contacting the data protection officer (dataprocessing@skribble.com); no self-service request API is documented.
+    evidence:
+      - source: https://www.skribble.com/en-eu/privacy/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: As a data subject, you have the rights listed below in accordance with the data protection law applicable to you. To exercise one or more of these rights, please contact our data protection officer.
+      - source: https://www.skribble.com/en-eu/privacy/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: You have the right to receive your data, which is processed on the basis of your consent or a contract, in a structured, common and machine-readable format and, if necessary, to transfer it to another controller.
+  subprocessors:
+    url: https://www.skribble.com/en-eu/dpa/
+    section: Annex 2 – Sub-Processors
+    note: The publicly reachable DPA carries a dated (Version 31.10.2025) sub-processor table per contracting entity (Skribble Switzerland, Skribble Germany), e.g. cloudscale.ch AG for hosting; customers are notified in advance of changes and may object within 30 days.
+    evidence:
+      - source: https://www.skribble.com/en-eu/dpa/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: This Annex 2 to the Data Processing Agreement under FADP and EU-GDPR lists the Sub-Processors used by Skribble.
+      - source: https://www.skribble.com/en-eu/dpa/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: The Customer must be notified in advance if Skribble commissions new Sub-Processors or replaces existing Sub-Processors after this Agreement has come into force.
+  data_residency:
+    url: https://www.skribble.com/en-eu/security/
+    section: Hosted in Switzerland
+    regions: [ch]
+    note: Security page states platform and data are hosted in Switzerland; the DPA is softer, saying processing takes place "preferably" in Switzerland and the EU/EEA with transfers abroad only under FADP/GDPR Chapter V.
+    evidence:
+      - source: https://www.skribble.com/en-eu/security/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: Our platform and all associated data is hosted in Switzerland on two geo-redundant Tier IV data centres with ISO 27001 certification (FINMA* compliant).
+      - source: https://www.skribble.com/en-eu/dpa/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: The Processor will preferably process the personal data in Switzerland and in the EU/EEA.
+  incident_notification:
+    url: https://www.skribble.com/en-eu/dpa/
+    section: 8. Notification in case of data breach
+    stated_sla: without delay
+    note: The DPA commits to notifying the customer of personal-data breaches "without delay"; no numeric deadline is stated.
+    evidence:
+      - source: https://www.skribble.com/en-eu/dpa/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: Skribble will notify the Customer without delay if Skribble becomes aware of breaches in personal data protection by Skribble or one of its Sub-Processors and will provide the Customer with all relevant information in text form (nature and extent of the breach, possible remedial actions, etc.).
+  data_retention:
+    url: https://www.skribble.com/en-eu/security/
+    stated_period: 10 years
+    note: Audit logs are kept for 10 years; for other personal data the privacy policy states only a purpose-bound duration.
+    evidence:
+      - source: https://www.skribble.com/en-eu/security/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: Skribble retains audit logs for 10 years for evidence purposes.
+      - source: https://www.skribble.com/en-eu/privacy/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: We process your data for the duration required for the respective purpose or purposes.
+  exit_assistance:
+    url: https://www.skribble.com/en-eu/dpa/
+    section: 10. Erasure and return of data
+    note: The DPA obliges Skribble to hand over or destroy customer data at the latest at contract termination; this is a contractual return/erasure clause, not a documented export tool or switching process.
+    evidence:
+      - source: https://www.skribble.com/en-eu/dpa/
+        http_status: 200
+        fetched: '2026-10-18'
+        quote: After completing the contractually agreed services or, prior to that, at the request of the Customer, but no later than the point in time when the Customer Contract is terminated, Skribble must hand over to the Customer or destroy, in a sufficiently secure procedure after receiving the Customer’s consent, all documents that have entered its possession, all results of processing and use, and all databases (as well as all copies or reproductions thereof) connected with the processing relationship.

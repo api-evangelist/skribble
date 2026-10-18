@@ -1,0 +1,1247 @@
+openapi: 3.1.0
+info:
+  title: Validation Service API
+  version: 1.2.4
+  description: |-
+    This API documentation describes the publicly available Validation
+    Service of Skribble.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+servers:
+  - url: https://document-validation.skribble.com/v1
+    description: Production - Switzerland
+  - url: https://document-validation.skribble.de/v1
+    description: Production - Germany
+security: []
+tags:
+  - name: Access
+    description: Endpoints for authentication, authorization, and user access management.
+  - name: Validation
+    description: Endpoints to validate documents, data formats, and signatures.
+  - name: Additional Information
+    description: Endpoints providing extra metadata or supplementary details for documents.
+  - name: Reports
+    description: Endpoints for generating, retrieving, and managing reports related to document processing.
+  - name: Billing and Credits
+    description: Endpoints for managing account credits, billing information, and payment operations.
+paths:
+  /access/login:
+    post:
+      operationId: postAccessLogin
+      tags:
+        - Access
+      summary: Sign in with username and API key to receive a JWT access token
+      security:
+        - {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              Credentials:
+                $ref: '#/components/examples/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              Credentials:
+                $ref: '#/components/examples/Login'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: JSON Web Token (JWT)
+              example: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSld...
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /validate/document:
+    post:
+      operationId: postValidateDocument
+      tags:
+        - Validation
+      summary: Validate a digitally signed content
+      description: |-
+        Validate signatures in digitally signed content, such as a PDF or XML file.
+        A validation ID {id} is returned that can be used to call additional
+        endpoints. The content to be validated is provided in the request body and
+        is not retained within our service. The maximum request or file size is
+        50MB. Request parameters can be used to set optional parameters to control
+        the validation
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/quality'
+        - $ref: '#/components/parameters/preservation'
+        - $ref: '#/components/parameters/legislation'
+        - $ref: '#/components/parameters/additionalInfos'
+        - $ref: '#/components/parameters/rejectVisualDifferences'
+        - $ref: '#/components/parameters/rejectUndefinedChanges'
+      requestBody:
+        description: Content can be sent directly as a file or base64-encoded in a JSON object
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  format: binary
+                  description: File content to validate (PDF or XML)
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  format: base64
+                  description: Base64-encoded content of the document to validate
+                  example: MIICjDCCAfWgAwIBAgIJANJczGLGyD...
+            examples:
+              Base64Document:
+                $ref: '#/components/examples/UploadDocumentAsBase64'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentValidationResponse'
+              examples:
+                Default:
+                  $ref: '#/components/examples/DocumentValidation'
+                WithSigners:
+                  $ref: '#/components/examples/DocumentValidationWithSigner'
+                WithFormatAndDetails:
+                  $ref: '#/components/examples/DocumentValidationWithFormat'
+                DocumentValidationWithFormat:
+                  $ref: '#/components/examples/DocumentValidationWithChecks'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '413':
+          $ref: '#/components/responses/ContentTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /validate/signature:
+    post:
+      operationId: postValidateSignature
+      tags:
+        - Validation
+      summary: Validate a digital signature
+      description: |-
+        Validate digital signatures such as CMS and CAdES without providing the
+        associated signed content. A validation ID {id} is returned that can be used
+        to call additional endpoints. The signature to be validated is provided in
+        the request body. Query parameters can be used to set optional parameters to
+        control the validation.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/quality'
+        - $ref: '#/components/parameters/preservation'
+        - $ref: '#/components/parameters/legislation'
+        - $ref: '#/components/parameters/additionalInfos'
+      requestBody:
+        description: Content can be sent directly as a file or base64-encoded in a JSON object
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  format: binary
+                  description: File content to validate (PDF or XML)
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  format: base64
+                  description: Base64-encoded content of the document to validate
+                  example: MIICjDCCAfWgAwIBAgIJANJczGLGyD...
+            examples:
+              Base64Signature:
+                summary: Base64-encoded signature
+                value:
+                  content: MIICjDCCAfWgAwIBAgIJANJczGLGyD...
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureValidationResponse'
+              examples:
+                Default:
+                  $ref: '#/components/examples/SignatureValidation'
+                WithSigners:
+                  $ref: '#/components/examples/SignatureValidationWithSigner'
+                WithFormatAndDetails:
+                  $ref: '#/components/examples/SignatureValidationWithFormat'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /validate/{id}:
+    delete:
+      operationId: deleteValidation
+      tags:
+        - Validation
+      summary: Deletes the validation
+      description: |-
+        Deletes the corresponding resource identified by {id}, universal for all
+        validation resources. Any resource that is not manually deleted will be
+        automatically deleted after 10 minutes.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/validateid'
+      responses:
+        '204':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /infos/{id}/validation:
+    get:
+      operationId: getInfosValidation
+      tags:
+        - Additional Information
+      summary: Get additional information about the validation itself. Refer to ETSI EN 319 102-1 for the indications and sub-indications that may be encountered.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/validateid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationInfosResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /infos/{id}/signers:
+    get:
+      operationId: getInfosSigners
+      tags:
+        - Additional Information
+      summary: Get additional information about the signers of a validation
+      description: |-
+        Additional information about the people who signed the document. The query
+        parameter is the id from the validation endpoint.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/validateid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignerInfosResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /infos/{id}/format:
+    get:
+      operationId: getInfosFormat
+      tags:
+        - Additional Information
+      summary: Get additional information about the document format
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/validateid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormatInfosResponse'
+              examples:
+                PDF:
+                  $ref: '#/components/examples/FormatPDF'
+                XML:
+                  $ref: '#/components/examples/FormatXML'
+                CMS:
+                  $ref: '#/components/examples/FormatCMS'
+                PDFA:
+                  $ref: '#/components/examples/FormatPDFA'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /reports/{id}/skribble:
+    get:
+      operationId: getSkribbleReport
+      tags:
+        - Reports
+      summary: Skribble validation report
+      description: Get the digitally signed Skribble validation report as PDF. The report is generated once per validation ID, language, ETSI attachment flag and timezone, then cached — subsequent requests with the same parameters are served from cache and not billed. Optionally attach the ETSI TS 119 102-2 XML validation report as an embedded file in the PDF.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/validateid'
+        - $ref: '#/components/parameters/reportlang'
+        - $ref: '#/components/parameters/reportattachetsi'
+        - $ref: '#/components/parameters/reporttimezone'
+      responses:
+        '200':
+          description: Signed validation report PDF
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: attachment; filename="validation-report.pdf"
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '502':
+          description: Upstream seal service error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemResponse'
+              example:
+                type: https://document-validation.skribble.com/problem/problem-with-message
+                method: GET
+                path: /v1/reports/00000000-0000-0000-0000-000000000000/skribble
+                status: 502
+                message: Upstream seal service error
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /reports/{id}/etsi:
+    get:
+      operationId: getReportsETSI
+      tags:
+        - Reports
+      summary: ETSI TS 119 102-2 validation report
+      description: Get the ETSI TS 119 102-2 signature validation report as a XML
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/validateid'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/xml:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /billing/credits/infos:
+    get:
+      operationId: getBillingCreditsInfos
+      tags:
+        - Billing and Credits
+      summary: Credits information
+      description: Get the list of credit usage information associated with specific endpoints
+      security:
+        - {}
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingCreditInfos'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /billing/credits/usage:
+    get:
+      operationId: getBillingCreditsUsage
+      tags:
+        - Billing and Credits
+      summary: Current credit usage
+      description: Get credit usage list and details for current billing period
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingCreditUsage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /billing/credits/invoiced:
+    get:
+      operationId: getBillingCreditsInvoiced
+      tags:
+        - Billing and Credits
+      summary: Invoiced credit details
+      description: |-
+        Get invoiced credit details for the most recent billing period or a
+        specified time period
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+          description: |-
+            Format YYYY, YYYYMM, YYYYMMDD is supported. If not specified the last
+            invoiced period is used by default
+          required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingCreditUsage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - api-key
+        - username
+      properties:
+        username:
+          type: string
+          example: api_demo_xxx
+          description: Your API key name
+        api-key:
+          type: string
+          example: your_secret_here
+          description: Your API key secret
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: |-
+        Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+        Follows a Problem+JSON-style shape. The `key` field is optional and reserved
+        for future use.
+      required:
+        - type
+        - method
+        - path
+        - status
+        - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: |-
+            URI identifying the problem category. The host of this URI depends on
+            the environment the request was made against (e.g.
+            `document-validation.skribble.com` and `document-validation.skribble.de`
+            for the production regions; other environments use their respective
+            hosts). Match on the path segment after `/problem/` rather than the full
+            URI. Known values:
+
+            - `https://document-validation.skribble.com/problem/problem-with-message` — generic error with a message
+            - `https://document-validation.skribble.com/problem/entity-not-found` — requested resource does not exist
+            - `https://document-validation.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+            - `https://document-validation.skribble.com/problem/constraint-violation` — request violates a domain constraint
+            - `https://document-validation.skribble.com/problem/limit-exceeded` — a usage limit was exceeded
+          example: https://document-validation.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v1/validate/document
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: Optional machine-readable error key. Reserved for future use.
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Document could not be parsed
+    SignerCertificate:
+      type: object
+      properties:
+        subject:
+          type: string
+          example: CN=John Doe, C=CH, SerialNumber=RAS64084aeaf178c31a
+        issuer:
+          type: string
+          example: CN=Swisscom Diamant CA 4, OU=Digital Certificate Services, O=Swisscom (Schweiz) AG, C=ch
+        serialNumber:
+          type: string
+          example: '160038991315232382650416191585425640265'
+    OptionalSignerInfos:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+        contact:
+          type: string
+          example: john.doe@acme.org
+        location:
+          type: string
+          example: Zurich, Switzerland
+        reason:
+          type: string
+          example: john.doe@acme.org digitally signed on skribble.com
+    Signer:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          example: true
+        signer:
+          type: string
+          example: john.doe@acme.org
+        time:
+          type: string
+          format: date-time
+          example: '2018-11-28T11:51:58.637Z'
+        quality:
+          type: string
+          example: QES
+        legislation:
+          type: string
+          example: CH
+        longTermValidation:
+          type: boolean
+          example: true
+        visualDifferences:
+          type: boolean
+          example: true
+        undefinedChanges:
+          type: boolean
+          example: true
+        certificate:
+          $ref: '#/components/schemas/SignerCertificate'
+        optionalInfos:
+          $ref: '#/components/schemas/OptionalSignerInfos'
+    SignerInfosResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Signer'
+    FormatInfosResponse:
+      type: object
+      properties:
+        fileType:
+          type: string
+          description: File Type
+        quality:
+          type: string
+          description: (Optional) File Type Quality
+        producer:
+          type: string
+          description: (Optional) File producer
+    ValidationInfosResponse:
+      type: object
+      properties:
+        indication:
+          type: string
+          example: TOTAL-FAILED
+        subIndication:
+          type: string
+          example: HASH_FAILURE
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - The certificate validation is not conclusive!
+            - The current time is not in the validity range of the signer's certificate!
+            - The signature is not intact!
+    OptionalValidationInfos:
+      type: object
+      properties:
+        signer:
+          $ref: '#/components/schemas/SignerInfosResponse'
+        format:
+          $ref: '#/components/schemas/FormatInfosResponse'
+        validation:
+          $ref: '#/components/schemas/ValidationInfosResponse'
+    DocumentValidationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        valid:
+          type: boolean
+          example: true
+        signatures:
+          type: integer
+          description: Number of signatures found
+          example: 1
+        validSignatures:
+          type: integer
+          description: Number of valid signatures found
+          example: 1
+        quality:
+          type: string
+          description: Highest signature quality found
+          example: QES
+        legislation:
+          type: string
+          description: Identified legislation (CH, EU, CH-EU, WORLD)
+          example: CH
+        longTermValidation:
+          type: boolean
+          description: All signatures are provided with long-term validation information
+          example: true
+        visualDifferences:
+          type: boolean
+          description: Indicates if visual differences were detected
+          example: true
+        undefinedChanges:
+          type: boolean
+          description: Indicates if undefined changes were detected
+          example: false
+        additionalInfos:
+          description: (Optional) Additional information details
+          $ref: '#/components/schemas/OptionalValidationInfos'
+    SignatureValidationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        valid:
+          type: boolean
+          example: true
+        signatures:
+          type: integer
+          description: Number of signatures found
+          example: 1
+        validSignatures:
+          type: integer
+          description: Number of valid signatures found
+          example: 1
+        quality:
+          type: string
+          description: Highest signature quality found
+          example: QES
+        legislation:
+          type: string
+          description: Identified legislation (CH, EU, CH-EU, WORLD)
+          example: CH
+        longTermValidation:
+          type: boolean
+          description: All signatures are provided with long-term validation information
+          example: true
+        additionalInfos:
+          description: (Optional) Additional information details
+          $ref: '#/components/schemas/OptionalValidationInfos'
+    CreditInfo:
+      type: object
+      properties:
+        sku:
+          type: string
+          description: SKU of the API endpoint
+          example: 01-01
+        endpoint:
+          type: string
+          description: API endpoint
+          example: /validate/document
+        credits:
+          type: integer
+          description: Credit usage per successful API endpoint call
+          example: 2
+    BillingCreditInfos:
+      type: object
+      properties:
+        validFrom:
+          type: string
+          format: date-time
+          description: ISO 8601 date-time in UTC
+          example: '2024-05-30T13:45:00Z'
+        consumptions:
+          type: array
+          description: Array of consumptions, each with endpoint details and its credit cost
+          items:
+            $ref: '#/components/schemas/CreditInfo'
+    CreditUsage:
+      type: object
+      properties:
+        endpoint:
+          type: string
+          description: The API endpoint being consumed
+          example: /validate/document
+        requests:
+          type: integer
+          description: Number of credits consumed by the endpoint call
+          example: 2
+        credits:
+          type: integer
+          description: The number of credits consumed through the corresponding endpoint
+          example: 4
+    BillingCreditUsage:
+      type: object
+      properties:
+        period:
+          type: string
+          description: Billing period in YYYYMM format
+          example: '20240528'
+        usage:
+          type: array
+          description: Array of consumptions, each detailing an endpoint use and its credit usage
+          items:
+            $ref: '#/components/schemas/CreditUsage'
+        requests:
+          type: integer
+          description: Total of requests made
+          example: 2
+        credits:
+          type: integer
+          description: Total of credits used
+          example: 4
+  examples:
+    Login:
+      summary: API credentials
+      value:
+        username: api_demo_xxx
+        api-key: your_secret_here
+    UploadDocumentAsBase64:
+      summary: Base64 encoded document
+      value:
+        content: JVBERi0xLjIgCjkgMCBvYmoKPDwKPj4Kc3RyZWFtCkJULyA5IFRmKFRlc3QpJyBFVAplbmRzdHJlYW0KZW5kb2JqCjQgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCA1IDAgUgovQ29udGVudHMgOSAwIFIKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0tpZHMgWzQgMCBSIF0KL0NvdW50IDEKL1R5cGUgL1BhZ2VzCi9NZWRpYUJveCBbIDAgMCA5OSA5IF0KPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1BhZ2VzIDUgMCBSCi9UeXBlIC9DYXRhbG9nCj4+CmVuZG9iagp0cmFpbGVyCjw8Ci9Sb290IDMgMCBSCj4+CiUlRU9G
+    DocumentValidation:
+      summary: Standard validation
+      value:
+        id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        valid: true
+        signatures: 1
+        validSignatures: 1
+        quality: QES
+        legislation: CH
+        longTermValidation: true
+        visualDifferences: false
+        undefinedChanges: false
+    DocumentValidationWithSigner:
+      summary: With signer
+      value:
+        id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        valid: true
+        signatures: 1
+        validSignatures: 1
+        quality: QES
+        legislation: CH
+        longTermValidation: true
+        visualDifferences: false
+        undefinedChanges: false
+        additionalInfos:
+          signer:
+            - valid: true
+              signer: John Doe
+              time: '2018-11-28T11:51:58.637Z'
+              quality: QES
+              legislation: CH
+              longTermValidation: true
+              visualDifferences: false
+              undefinedChanges: false
+              certificate:
+                subject: CN=John Doe, C=CH, SerialNumber=RAS64084aeaf178c31a
+                issuer: CN=Swisscom Diamant CA 4, OU=Digital Certificate Services, O=Swisscom (Schweiz) AG, C=ch
+                serialNumber: '160038991315232382650416191585425640265'
+              optionalInfos:
+                name: John Doe
+                contact: john.doe@acme.org
+    DocumentValidationWithFormat:
+      summary: With format and validation
+      value:
+        id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        valid: true
+        signatures: 1
+        validSignatures: 1
+        quality: QES
+        legislation: CH
+        longTermValidation: true
+        visualDifferences: false
+        undefinedChanges: false
+        additionalInfos:
+          format:
+            fileType: PDF
+            producer: Acrobat Distiller 6.0 (Windows)
+          validation:
+            indication: TOTAL-PASSED
+    DocumentValidationWithChecks:
+      summary: Rejected visual differences
+      value:
+        id: 9c2d7b48-4e1f-4d37-91e5-7bdfc9a9e3f1
+        valid: false
+        signatures: 1
+        validSignatures: 1
+        quality: SES
+        legislation: CH
+        longTermValidation: true
+        visualDifferences: true
+        undefinedChanges: false
+    SignatureValidation:
+      summary: Standard validation
+      value:
+        id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        valid: true
+        signatures: 1
+        validSignatures: 1
+        quality: QES
+        legislation: CH
+        longTermValidation: true
+    SignatureValidationWithSigner:
+      summary: With signer
+      value:
+        id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        valid: true
+        signatures: 1
+        validSignatures: 1
+        quality: QES
+        legislation: CH
+        longTermValidation: true
+        additionalInfos:
+          signer:
+            - valid: true
+              signer: John Doe
+              time: '2018-11-28T11:51:58.637Z'
+              quality: QES
+              legislation: CH
+              longTermValidation: true
+              certificate:
+                subject: CN=John Doe, C=CH, SerialNumber=RAS64084aeaf178c31a
+                issuer: CN=Swisscom Diamant CA 4, OU=Digital Certificate Services, O=Swisscom (Schweiz) AG, C=ch
+                serialNumber: '160038991315232382650416191585425640265'
+              optionalInfos:
+                name: John Doe
+                contact: john.doe@acme.org
+    SignatureValidationWithFormat:
+      summary: With format and validation
+      value:
+        id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        valid: true
+        signatures: 1
+        validSignatures: 1
+        quality: QES
+        legislation: CH
+        longTermValidation: true
+        additionalInfos:
+          format:
+            fileType: CMS
+            producer: ''
+          validation:
+            indication: TOTAL-PASSED
+    FormatPDF:
+      summary: Sample PDF/PAdES
+      value:
+        fileType: PDF
+        producer: Acrobat Distiller 6.0 (Windows)
+    FormatXML:
+      summary: Sample XML/XAdES
+      value:
+        fileType: XML
+    FormatCMS:
+      summary: Sample CMS/CAdES
+      value:
+        fileType: CMS
+    FormatPDFA:
+      summary: Sample PDF/A
+      value:
+        fileType: PDF
+        quality: PDF/A-2A
+        producer: Acrobat Distiller 6.0 (Windows)
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v1/validate/document
+            status: 401
+            message: Authentication required
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/feature-not-enabled
+            method: POST
+            path: /v1/validate/document
+            status: 403
+            message: Validation API access is not enabled for this business
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 429
+            message: Too many requests
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 500
+            message: Internal server error
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 503
+            message: Service unavailable
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 400
+            message: Document could not be parsed
+    ContentTooLarge:
+      description: Content too large
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 413
+            message: Document exceeds maximum allowed size
+    UnsupportedMediaType:
+      description: Unsupported media type
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v1/validate/document
+            status: 415
+            message: Content-Type 'text/plain' is not supported
+    Success:
+      description: Success
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/entity-not-found
+            method: GET
+            path: /v1/infos/00000000-0000-0000-0000-000000000000/validation
+            status: 404
+            message: Resource not found
+    NotAcceptable:
+      description: Not acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://document-validation.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v1/reports/00000000-0000-0000-0000-000000000000/skribble
+            status: 406
+            message: No acceptable representation
+  parameters:
+    quality:
+      name: quality
+      required: false
+      in: query
+      description: |-
+        Optional flag specifying the minimum signature quality required (SES, AES,
+        QES).
+      schema:
+        type: string
+        enum:
+          - SES
+          - AES
+          - QES
+    preservation:
+      name: longTermValidation
+      in: query
+      required: false
+      description: Optional flag indicating whether the signature must be long-term valid.
+      schema:
+        type: boolean
+    legislation:
+      name: legislation
+      in: query
+      required: false
+      description: |-
+        Optional jurisdiction (legal framework) the signature must satisfy:
+        `CH` = Swiss law (ZertES), `EU` = EU law (eIDAS Regulation), `CH_EU` = both
+        ZertES and eIDAS, `WORLD` = no specific jurisdiction (international). When set,
+        the validation reports whether the signature meets the selected framework.
+      schema:
+        type: string
+        enum:
+          - WORLD
+          - CH
+          - EU
+          - CH_EU
+    additionalInfos:
+      name: infos
+      in: query
+      required: false
+      description: |-
+        Optional flag to request additional information, such as validation, format,
+        or signer details.
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - validation
+            - format
+            - signer
+    rejectVisualDifferences:
+      name: rejectVisualDifferences
+      in: query
+      required: false
+      description: |-
+        Optional flag to specify if visual differences should be rejected. If 'true',
+        validation will fail due to visual differences; if 'false' or not provided,
+        visual differences will not cause validation to fail.
+      schema:
+        type: boolean
+    rejectUndefinedChanges:
+      name: rejectUndefinedChanges
+      in: query
+      required: false
+      description: |-
+        Optional flag to specify if undefined changes should be rejected. If 'true',
+        validation will fail due to undefined changes; if 'false' or not provided,
+        undefined changes will not cause validation to fail.
+      schema:
+        type: boolean
+    validateid:
+      name: id
+      in: path
+      required: true
+      description: The 'id' provided by the validate operation
+      schema:
+        type: string
+        format: uuid
+        default: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+    reportlang:
+      name: lang
+      in: query
+      description: Language of the validation report
+      required: false
+      schema:
+        type: string
+        enum:
+          - en
+          - de
+          - fr
+        default: en
+    reportattachetsi:
+      name: attachETSIReport
+      in: query
+      description: Attach the ETSI TS 119 102-2 XML validation report as a file attachment to the PDF. When enabled, the XML report is embedded in the PDF and a paperclip annotation is added on the last page. This registers additional usage for the ETSI report endpoint.
+      required: false
+      schema:
+        type: boolean
+        default: false
+    reporttimezone:
+      name: timeZone
+      in: query
+      description: IANA timezone name used to render timestamps in the report — the "Generated at" time and each signer's "Time of signature". Defaults to UTC, preserving the previous behaviour when omitted. The rendered zone abbreviation (e.g. `UTC`, `CET`, `PST`) reflects the chosen zone. Browser callers can pass `Intl.DateTimeFormat().resolvedOptions().timeZone`. The timezone is part of the report cache key, so each distinct timezone (per language and ETSI flag) is rendered, billed and cached once. An unknown or malformed value returns `400`.
+      required: false
+      schema:
+        type: string
+        default: UTC
+        example: Europe/Zurich

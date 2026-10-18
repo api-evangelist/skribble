@@ -1,0 +1,23 @@
+generated: '2026-10-18'
+method: probed
+generator: harvest-packages.py
+source: registry metadata endpoints (registry.npmjs.org, pypi.org, rubygems.org, api.nuget.org, packagist.org, crates.io)
+ownership_rule: 'official: true only when the registry metadata (homepage, repository, author, URLs) names the provider''s domain (security/skribble-domain-security.yml,
+  security/skribble-vulnerability-disclosure.yml, skribble.com) or its accepted GitHub org.'
+packages:
+- name: skribble
+  registry: pypi
+  url: https://pypi.org/project/skribble/
+  language: Python
+  official: true
+  version: 0.2.0
+  published: '2025-12-17'
+  evidence: metadata names skribble.com
+- name: skribble
+  registry: crates
+  url: https://crates.io/crates/skribble
+  language: Rust
+  official: false
+  version: 0.0.0
+  published: '2023-01-27'
+  evidence: 'name match only: the metadata names neither the provider''s domain nor its GitHub org'

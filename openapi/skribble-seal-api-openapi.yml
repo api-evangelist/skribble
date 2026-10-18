@@ -1,0 +1,495 @@
+openapi: 3.2.0
+info:
+  title: Skribble Seal API
+  contact:
+    name: Skribble Engineering
+    url: https://skribble.com
+    email: support@skribble.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.skribble.com/en-eu/terms-of-use/
+  version: '1.0'
+  description: 'Operations tagged Seal across 3 of this provider''s published API definitions: skribble-sign-v3-openapi.yml, skribble-sign-v2-openapi.yml, skribble-sign-v3-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.skribble.com/v3
+  description: Production - Switzerland
+- url: https://api.skribble.de/v3
+  description: Production - Germany
+- url: https://api.skribble.com/v2
+  description: Production - Switzerland
+- url: https://api.skribble.de/v2
+  description: Production - Germany
+security: []
+tags:
+- name: Seal
+  description: Endpoints for applying electronic seals to documents.
+paths:
+  /seal:
+    post:
+      tags:
+      - Seal
+      summary: Seal a Document with a Legal Entity Signature
+      description: 'Uploads a document and affixes an electronic seal in a single call.
+
+
+        Optionally, a visual signature can also be placed on the document.
+
+
+        The response contains the `document_id` of the newly created sealed
+
+        document, which can be used to retrieve it.'
+      operationId: sealDocument
+      security:
+      - bearer: []
+      requestBody:
+        description: Content base64-encoded in a JSON object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSealRequest'
+            examples:
+              Sample1:
+                $ref: '#/components/examples/SealDoc'
+              Sample2:
+                $ref: '#/components/examples/SealVisual'
+              Sample3:
+                $ref: '#/components/examples/SealVisualCustom'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSealResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    servers:
+    - url: https://api.skribble.com/v3
+      description: Production - Switzerland
+    - url: https://api.skribble.de/v3
+      description: Production - Germany
+components:
+  responses:
+    Forbidden:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests/4f43614a-de50-bfe1-2df3-4c881fc7840e
+            status: 403
+            message: Access denied
+    TooManyRequests:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 429
+            message: Too many requests
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: GET
+            path: /v2/signature-requests
+            status: 401
+            message: Unauthorized
+    NotAcceptable:
+      description: Not acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 406
+            message: Content type not supported
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 500
+            message: Internal server error
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 503
+            message: Service unavailable
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemResponse'
+          example:
+            type: https://api.skribble.com/problem/problem-with-message
+            method: POST
+            path: /v2/signature-requests
+            status: 400
+            message: Validation failed for JSON object
+  schemas:
+    ProblemResponse:
+      title: Problem
+      type: object
+      description: 'Error response envelope returned for all 4xx and 5xx responses with a JSON body.
+
+        Follows a Problem+JSON-style shape. The `key` field is optional and only present
+
+        for errors that carry a machine-readable code.'
+      required:
+      - type
+      - method
+      - path
+      - status
+      - message
+      properties:
+        type:
+          type: string
+          format: uri
+          description: 'URI identifying the problem category. The host of this URI depends on
+
+            the environment the request was made against (e.g. `api.skribble.com`
+
+            and `api.skribble.de` for the production regions; other environments
+
+            use their respective hosts). Match on the path segment after `/problem/`
+
+            rather than the full URI. Known values:
+
+
+            - `https://api.skribble.com/problem/problem-with-message` — generic error with a message
+
+            - `https://api.skribble.com/problem/entity-not-found` — requested resource does not exist
+
+            - `https://api.skribble.com/problem/feature-not-enabled` — a required feature is not enabled for the business
+
+            - `https://api.skribble.com/problem/constraint-violation` — request violates a domain constraint
+
+            - `https://api.skribble.com/problem/parameterized` — parameterized error with details
+
+            - `https://api.skribble.com/problem/limit-exceeded` — a usage limit was exceeded'
+          example: https://api.skribble.com/problem/problem-with-message
+        method:
+          type: string
+          description: HTTP method of the failing request.
+          example: POST
+        path:
+          type: string
+          description: Request URI of the failing request.
+          example: /v2/signature-requests
+        status:
+          type: integer
+          description: HTTP status code, mirroring the response status line.
+          example: 400
+        key:
+          type: string
+          description: 'Optional machine-readable error key. Present for a subset of errors that carry
+
+            a stable code. Prefer matching on this field over parsing `message`, which is
+
+            not part of the stable contract.
+
+
+            Known keys, grouped by category:
+
+
+            Authentication (`403`):
+
+
+            - `error.auth.token_expired`: the access token has expired
+
+            - `error.auth.token_invalid`: the access token is malformed or otherwise invalid
+
+            - `error.auth.credentials_invalid`: the supplied credentials were rejected
+
+
+            Rate limiting (`429`):
+
+
+            - `error.rate_limit.exceeded`: a generic rate limit was exceeded
+
+            - `error.rate_limit.reminder`: the per-signature-request reminder limit was exceeded
+
+
+            File upload / attachment (`400`):
+
+
+            - `file.attachment.unsupported`: the uploaded attachment type is not supported
+
+            - `file.malware.detected`: malware was detected in the uploaded file
+
+
+            PDF processing (`400`):
+
+
+            - `file.pdf.general_error`: the PDF could not be loaded (corrupt or unreadable)
+
+            - `file.pdf.encryption.unknown_password`: the PDF is encrypted with an unknown password
+
+            - `file.pdf.encryption.no_changes_allowed`: the PDF''s signature permissions (DocMDP) do not allow the required changes
+
+            - `file.pdf.encryption.unknown_permissions`: the PDF is encrypted with an unknown permissions type
+
+            - `file.pdf.signature_verification.failed`: verification of an existing PDF signature failed
+
+
+            Signature request (`400`):
+
+
+            - `error.sr.last_document_cannot_be_removed`: the request would remove the only remaining document from the signature request; an SR must keep at least one document'
+          example: file.attachment.unsupported
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Validation failed for JSON object
+    VisualSignature:
+      description: Visual signature placement information.
+      oneOf:
+      - type: object
+        title: Single Position
+        description: Use a single explicit position.
+        required:
+        - position
+        properties:
+          position:
+            $ref: '#/components/schemas/VisualSignaturePosition'
+          image:
+            $ref: '#/components/schemas/VisualSignatureImage'
+          positions:
+            description: Must not be provided when position is used.
+            readOnly: true
+          form_field:
+            description: Must not be provided when position is used.
+            readOnly: true
+      - type: object
+        title: Multiple Positions
+        description: Use multiple explicit positions.
+        required:
+        - positions
+        properties:
+          positions:
+            type: array
+            items:
+              $ref: '#/components/schemas/VisualSignaturePosition'
+          image:
+            $ref: '#/components/schemas/VisualSignatureImage'
+          position:
+            description: Must not be provided when positions are used.
+            readOnly: true
+          form_field:
+            description: Must not be provided when positions are used.
+            readOnly: true
+      - type: object
+        title: Form Field
+        description: Use a form field only.
+        required:
+        - form_field
+        properties:
+          form_field:
+            type: string
+            description: 'Name of the form field in which the signature is placed. If multiple fields of this name are present in the document, all will be used.
+
+              '
+          text:
+            type: object
+            description: Optional text to display inside the form field.
+            properties:
+              content:
+                type: string
+                description: Content of the text field.
+                example: Customer Signature
+              font_name:
+                type: string
+                description: 'Font name to use. It is just a suggestion. For PDF: all default PDF fonts can be used or fonts which are already embedded in the document. If not specified, the default font of the form field will be used.
+
+                  '
+                example: Helvetica-Bold
+              font_size:
+                type: string
+                description: Font size to use. If not specified, the default size for the form field will be used.
+                example: '12'
+              font_color:
+                type: string
+                description: Font color to use as RGB value encoded in hex. Defaults to black (#000000).
+                example: '#ff0000'
+          image:
+            $ref: '#/components/schemas/VisualSignatureImage'
+          position:
+            description: Must not be provided when form_field is used.
+            readOnly: true
+          positions:
+            description: Must not be provided when form_field is used.
+            readOnly: true
+    CreateSealResponse:
+      title: Create Seal Response
+      type: object
+      required:
+      - document_id
+      properties:
+        document_id:
+          type: string
+          description: Generated document ID
+          format: uuid
+          example: 98ca4eda-11f7-da4a-72da-9db677f38280
+    VisualSignatureImage:
+      title: Visual Signature Image
+      type: object
+      description: Visual signature image.
+      required:
+      - content
+      - content_type
+      properties:
+        content:
+          type: string
+          description: Base64 encoded bytes of content.
+          format: byte
+          example: SGVsbG8gd29ybGQh
+        content_type:
+          type: string
+          description: Content type of bytes sent in content. At the moment this MUST be image/png
+          example: image/png
+        content_size:
+          type: integer
+          format: int32
+          description: Size of `content` in bytes. Calculated by the server.
+          readOnly: true
+          example: 3160
+    CreateSealRequest:
+      title: Create Seal Request
+      type: object
+      required:
+      - content
+      properties:
+        content:
+          type: string
+          format: byte
+          description: Base64 encoded bytes of the document.
+          example: U29tZUJhc2U2NEVuY29kZWRJbWFnZQ==
+        account_name:
+          type: string
+          description: Account name of the seal contract that should be used. If your company own more than one seal and the field account_name is not given or empty, then the first given seal for the API user will be used for sealing.
+          example: ais_demo_seal
+        title:
+          type: string
+          description: Title of the document.
+          example: Example contract
+        visual_signature:
+          oneOf:
+          - type: 'null'
+            title: No visual signature
+          - $ref: '#/components/schemas/VisualSignature'
+    VisualSignaturePosition:
+      title: Visual Signature Position
+      type: object
+      properties:
+        page:
+          type: string
+          description: 'Page number (0-indexed) where the signature appears.
+
+            This is a String and not a number!'
+          example: '0'
+        height:
+          type: number
+          description: Height of the signature in pixels.
+          example: 70
+        width:
+          type: number
+          description: Width of the signature in pixels.
+          example: 150
+        x:
+          type: number
+          description: X-coordinate (pixels from left) of signature.
+          example: 350
+        y:
+          type: number
+          description: Y-coordinate (pixels from top) of signature.
+          example: 240
+        rotation:
+          type: number
+          description: "Defines a rotation of the field content. \nIf used in context with a form field, then only the values 0, 90, 180, 270 are legal.\nOtherwise every value is legal. The rotation is applied counter clockwise."
+          example: 0
+  examples:
+    SealVisual:
+      summary: Seal document with default visual signature
+      value:
+        account_name: ais_demo_seal
+        title: Example contract
+        content: U29tZUJhc2U2NEVuY29kZWRJbWFnZQ==
+        visual_signature:
+          position:
+            x: 364
+            y: 160
+            width: 129
+            height: 60
+            page: '0'
+    SealDoc:
+      summary: Seal document
+      value:
+        account_name: ais_demo_seal
+        content: U29tZUJhc2U2NEVuY29kZWRJbWFnZQ==
+    SealVisualCustom:
+      summary: Seal document with custom visual signature
+      value:
+        account_name: ais_demo_seal
+        title: Example contract
+        content: U29tZUJhc2U2NEVuY29kZWRJbWFnZQ==
+        visual_signature:
+          position:
+            x: 100
+            y: 200
+            width: 150
+            height: 70
+            page: '1'
+          image:
+            content: U3RyaW5n
+            content_type: image/png
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- skribble-sign-v3-openapi.yml
+- skribble-sign-v2-openapi.yml
+- skribble-sign-v3-openapi.yml
