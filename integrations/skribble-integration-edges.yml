@@ -12,6 +12,7 @@ checked:
 - https://monid.ai/tools/skribble
 - https://n8n.io/integrations/skribble/
 - https://www.skribble.com/en-eu/integrations/
+- https://zapier.com/api/v4/apps/
 - https://zapier.com/apps/skribble/integrations
 summary: null
 marketplace_apps: []
@@ -35,4 +36,29 @@ edges:
   marketplace: microsoft
   evidence: https://learn.microsoft.com/en-us/connectors/skribblesign/
   description: Microsoft Power Automate connector
+- partner_name: Zapier
+  partner: zapier
+  partner_match: aggregator
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://zapier.com/apps/skribble/integrations
+  category: null
+  contract_reference:
+    register: Zapier app directory (zapier.com/api/v4/apps)
+    spec_file: null
+    role: ipaas-connector:zapier
+    registered_name: Skribble
+    matched_domain: skribble.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-20'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: skribble
+    beta: false
+    builder: unknown (not in the directory record)
+  detected_by: sweep-workflow-automation.py
+  first_seen: '2026-10-20'
 templates: []
