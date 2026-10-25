@@ -1,0 +1,14 @@
+{
+  "repo": "skribble",
+  "feeds": [
+    {
+      "source": "https://www.skribble.com/en-eu/blog/category/all/page/1/",
+      "feed_url": "https://www.skribble.com/en-eu/blog/category/all/page/1/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-10-24T12:29:31Z"
+}
